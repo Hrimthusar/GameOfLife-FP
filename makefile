@@ -1,9 +1,9 @@
-CC  	= g++
-CCLIBS = -lsfml-graphics -lsfml-window -lsfml-system
-CCFLAGS	= -Wall -Wextra
+CXX  		= g++
+CXXLIBS 	= -lsfml-graphics -lsfml-window -lsfml-system
+CXXFLAGS	= -g -std=c++14 -Wall -Wextra -I./libs/range-v3/include
 
-SOURCEDIR = src
-BUILDDIR = build
+SOURCEDIR 	= src
+BUILDDIR 	= build
 
 PROGRAM	= game_of_life
 SOURCES = $(wildcard $(SOURCEDIR)/*.cpp)
@@ -11,11 +11,11 @@ OBJECTS = $(patsubst $(SOURCEDIR)/%.cpp,$(BUILDDIR)/%.o,$(SOURCES))
 
 $(BUILDDIR)/$(PROGRAM): $(OBJECTS)
 	@echo "Linking: $@"
-	$(CC) $^ -o $@ $(CCLIBS)
+	$(CXX) $^ -o $@ $(CXXLIBS)
 
 $(OBJECTS): $(BUILDDIR)/%.o : $(SOURCEDIR)/%.cpp
 	@echo "Compiling: $@"
-	$(CC) -c -o $@ $< $(CCFLAGS)
+	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 .PHONY: all dir clean run printObj
 

@@ -1,6 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+
 #include "misc.hpp"
+
+void test_range();
 
 int main()
 {
@@ -21,8 +24,13 @@ int main()
         window.draw(shape);
         window.display();
     }
-    std::cout << misc::say_my_name() << std::endl;
+    std::cout << misc::meaning_of_life() << std::endl;
+    misc::test_range();
 
     return 0;
 }
+
+
+
+
 

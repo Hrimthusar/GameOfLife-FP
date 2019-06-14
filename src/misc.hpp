@@ -3,11 +3,8 @@
 
 namespace misc
 {
-    int say_my_name()
-    {
-        return 42;
-
-    }
+    void test_range();
+    int meaning_of_life();
 }
 
 #endif /* MISC_H */
