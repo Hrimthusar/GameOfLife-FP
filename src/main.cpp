@@ -23,6 +23,12 @@ int main()
 
             if (event.type == sf::Event::MouseMoved)
                 world->handleHover(event);
+
+            if (event.type == sf::Event::MouseButtonPressed
+                    && event.mouseButton.button == sf::Mouse::Left){
+                std::cout << "I'm clicked" << std::endl;
+                world->handleClick(event);
+            }
         }
 
         window.clear();

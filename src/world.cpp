@@ -2,9 +2,15 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "world.hpp"
+#include "cell.hpp"
 
 /* Null, because instance will be initialized on demand. */
 World *World::instance = NULL;
+
+/* Initializing cell colors */
+const sf::Color World::clrClickedCell  = sf::Color(0x00, 0x33, 0x66);
+const sf::Color World::clrHoveredCell  = sf::Color(0x00, 0xFF, 0xFF);
+const sf::Color World::clrBlankCell    = sf::Color(0xCC, 0xFF, 0xFF);
 
 World *World::getInstance(unsigned w, unsigned h)
 {
@@ -44,24 +50,27 @@ void World::initGrid(unsigned m, unsigned n)
   for (unsigned i = 0; i < xCount; ++i)
     grid[i].resize(yCount);
 
+  std::cout << "Mate" << grid[0][0].is_hovered() << std::endl;
+
   for (unsigned i = 0; i < xCount; ++i)
   {
     for (unsigned j = 0; j < yCount; ++j)
     {
-      grid[i][j].first = sf::RectangleShape(sf::Vector2f(cellSize, cellSize));
-      grid[i][j].first.setPosition(leftPadding + i * (cellMargin + cellSize),
+      grid[i][j].body().setSize(sf::Vector2f(cellSize, cellSize));
+      grid[i][j].body().setPosition(leftPadding + i * (cellMargin + cellSize),
                                    topPadding + j * (cellMargin + cellSize));
 
-      if (grid[i][j].second == 0)
-        grid[i][j].first.setFillColor(sf::Color::Blue);
+      if (grid[i][j].is_on() == 0)
+        grid[i][j].body().setFillColor(sf::Color::Blue);
       else
-        grid[i][j].first.setFillColor(sf::Color::Cyan);
+        grid[i][j].body().setFillColor(sf::Color::Cyan);
     }
   }
 };
 
 void World::handleHover(sf::Event &event)
 {
+    // TODO create a coordinateToCellIndex function
   auto &mouseX = event.mouseMove.x;
   auto &mouseY = event.mouseMove.y;
 
@@ -76,12 +85,27 @@ void World::handleHover(sf::Event &event)
   {
     for (unsigned j = 0; j < yCount; ++j)
     {
-      grid[i][j].second = 0;
+      grid[i][j].set_is_hovered(false);
     }
   }
 
   if (x >= 0 && x < xCount && y >= 0 && y < yCount)
-    grid[x][y].second = 1; // TODO: indikator za hover...
+    grid[x][y].set_is_hovered(true);
+}
+
+void World::handleClick(sf::Event &event)
+{
+  auto &mouseX = event.mouseButton.x;
+  auto &mouseY = event.mouseButton.y;
+
+  //                  TODO: Left padding
+  auto x = (mouseX - (screenWidth % innerWidth) / 2) / (cellSize + cellMargin);
+  //                  TODO: Top padding
+  auto y = (mouseY - (screenHeight % innerHeight) / 2) / (cellSize + cellMargin);
+
+  //std::cout << x << "," << y << std::endl;
+  if (x >= 0 && x < xCount && y >= 0 && y < yCount)
+    grid[x][y].set_is_on(!grid[x][y].is_on());
 }
 
 // if (event.type == sf::Event::MouseMoved)
@@ -96,11 +120,13 @@ void World::drawGrid(sf::RenderWindow &window)
   {
     for (unsigned j = 0; j < yCount; ++j)
     {
-      if (grid[i][j].second == 0)
-        grid[i][j].first.setFillColor(sf::Color::Blue);
+      if (grid[i][j].is_on())
+        grid[i][j].body().setFillColor(clrClickedCell);
+      else if (grid[i][j].is_hovered())
+        grid[i][j].body().setFillColor(clrHoveredCell);
       else
-        grid[i][j].first.setFillColor(sf::Color::Cyan);
-      window.draw(grid[i][j].first);
+        grid[i][j].body().setFillColor(clrBlankCell);
+      window.draw(grid[i][j].body());
     }
   }
 }
