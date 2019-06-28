@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+// TODO refactor: change to camel case all field variables
 class Cell
 {
 private:
