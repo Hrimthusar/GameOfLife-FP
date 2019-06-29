@@ -6,8 +6,9 @@
 
 int main()
 {
-    const unsigned w = 800;
-    const unsigned h = 600;
+    const unsigned w = sf::VideoMode::getDesktopMode().width * 2 / 3;
+    const unsigned h = sf::VideoMode::getDesktopMode().height * 2 / 3;
+
     sf::RenderWindow window(sf::VideoMode(w, h), "Game of Life");
 
     World *world = World::getInstance(w, h);
@@ -28,23 +29,18 @@ int main()
 
             if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
             {
-                // std::cout << "I'm clicked" << std::endl;
-                // world->handleClick(event);
                 world->set_isMouseDown(true);
                 world->handleClick(event);
             }
 
             if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
             {
-                // std::cout << "I'm clicked" << std::endl;
                 world->set_isMouseDown(false);
             }
         }
 
         window.clear();
-
         world->drawGrid(window);
-
         window.display();
     }
 
