@@ -18,16 +18,26 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) || (event.type == sf::Event::Closed))
+            {
                 window.close();
+            }
 
             if (event.type == sf::Event::MouseMoved)
                 world->handleHover(event);
 
-            if (event.type == sf::Event::MouseButtonPressed
-                    && event.mouseButton.button == sf::Mouse::Left){
-                std::cout << "I'm clicked" << std::endl;
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+            {
+                // std::cout << "I'm clicked" << std::endl;
+                // world->handleClick(event);
+                world->set_isMouseDown(true);
                 world->handleClick(event);
+            }
+
+            if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
+            {
+                // std::cout << "I'm clicked" << std::endl;
+                world->set_isMouseDown(false);
             }
         }
 
