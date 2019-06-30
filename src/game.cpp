@@ -5,7 +5,7 @@
 const unsigned Game::s_windowWidth = sf::VideoMode::getDesktopMode().width * 2 / 3;
 const unsigned Game::s_windowHeight = sf::VideoMode::getDesktopMode().height * 2 / 3;
 
-sf::Time Game::s_tick = sf::seconds(1.0f);// / 60.0f);
+sf::Time Game::s_tick = sf::seconds(1.0f); // / 60.0f);
 
 Game::Game()
     : m_window(sf::VideoMode(s_windowWidth, s_windowHeight), "Game of Life")
@@ -53,21 +53,18 @@ void Game::Render()
     m_window.display();
 }
 
-
 void Game::ProcessEvents()
 {
     sf::Event event;
 
     while (m_window.pollEvent(event))
     {
-        if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-                || (event.type == sf::Event::Closed))
+        if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) || (event.type == sf::Event::Closed))
         {
             m_window.close();
         }
 
-        if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::G)
-                || (event.type == sf::Event::Closed))
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::G)
         {
             m_animate = !m_animate;
         }
@@ -76,17 +73,16 @@ void Game::ProcessEvents()
             m_world->handleHover(event);
 
         if (event.type == sf::Event::MouseButtonPressed &&
-                event.mouseButton.button == sf::Mouse::Left)
+            event.mouseButton.button == sf::Mouse::Left)
         {
             m_world->setIsMouseDown(true);
             m_world->handleClick(event);
         }
 
         if (event.type == sf::Event::MouseButtonReleased &&
-                event.mouseButton.button == sf::Mouse::Left)
+            event.mouseButton.button == sf::Mouse::Left)
         {
             m_world->setIsMouseDown(false);
         }
     }
 }
-
