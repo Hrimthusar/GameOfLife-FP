@@ -43,11 +43,11 @@ std::pair<unsigned, unsigned> World::getCellFromMouse(int mouseX, int mouseY)
 
 unsigned World::leftPadding()
 {
-    return (screenWidth % innerWidth) / 2;
+    return (screenWidth - innerWidth) / 2;
 }
 unsigned World::topPadding()
 {
-    return (screenHeight % innerHeight) / 2;
+    return (screenHeight - innerHeight) / 2;
 }
 
 void World::setIsMouseDown(bool isMouseDown)
