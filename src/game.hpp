@@ -15,6 +15,7 @@ private:
     sf::RenderWindow m_window;
     World *m_world;
     static sf::Time s_tick;
+    bool m_animate = false;
 
     const static unsigned s_windowWidth;
     const static unsigned s_windowHeight;

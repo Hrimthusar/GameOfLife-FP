@@ -143,3 +143,47 @@ void World::drawGrid(sf::RenderWindow &window)
         }
     }
 }
+
+void World::updateGrid()
+{
+    static std::vector<std::vector<int>> count_cell(xCount, std::vector<int> (yCount, 0));
+
+    for (unsigned i = 0; i < xCount; ++i)
+    {
+        for (unsigned j = 0; j < yCount; ++j)
+        {
+            count_cell[i][j] = 0;
+            std::vector<int> move{-1, 0, 1};
+            for ( int i_move : move )
+            {
+                for ( int j_move : move )
+                {
+                    int x_new = i + i_move;
+                    int y_new = j + j_move;
+                    if (x_new >= 0 && x_new < static_cast<int>(xCount)
+                            && y_new >= 0 && y_new < static_cast<int>(yCount)
+                            && (i_move != 0 || j_move != 0))
+                    {
+                        count_cell[i][j] += grid[x_new][y_new].isOn();
+                    }
+                }
+            }
+        }
+    }
+
+    for (unsigned i = 0; i < xCount; ++i)
+    {
+        for (unsigned j = 0; j < yCount; ++j)
+        {
+            if (grid[i][j].isOn() && (count_cell[i][j] < 2 || count_cell[i][j] > 3))
+            {
+                grid[i][j].set_isOn(false);
+            }
+            if (!grid[i][j].isOn() && count_cell[i][j] == 3)
+            {
+                grid[i][j].set_isOn(true);
+            }
+        }
+    }
+}
+

@@ -41,6 +41,9 @@ void Game::Update(float dt)
 {
     std::cout << "One second has passed" << std::endl;
     std::cout << dt << std::endl;
+
+    if (m_animate)
+        m_world->updateGrid();
 }
 
 void Game::Render()
@@ -61,6 +64,12 @@ void Game::ProcessEvents()
                 || (event.type == sf::Event::Closed))
         {
             m_window.close();
+        }
+
+        if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::G)
+                || (event.type == sf::Event::Closed))
+        {
+            m_animate = !m_animate;
         }
 
         if (event.type == sf::Event::MouseMoved)

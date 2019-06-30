@@ -41,6 +41,9 @@ public:
 
     void initGrid(unsigned m, unsigned n);
     void drawGrid(sf::RenderWindow &window);
+    void updateGrid();
+
+
     void handleHover(sf::Event &event);
     void handleClick(sf::Event &event);
 
