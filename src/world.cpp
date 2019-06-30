@@ -28,7 +28,7 @@ World::World(unsigned w, unsigned h)
 {
 }
 
-bool World::isMouseDown()
+bool World::isMouseDown() const
 {
     return m_isMouseDown;
 }
@@ -50,10 +50,9 @@ unsigned World::topPadding()
     return (screenHeight % innerHeight) / 2;
 }
 
-bool World::set_isMouseDown(bool isMouseDown)
+void World::setIsMouseDown(bool isMouseDown)
 {
-
-    return m_isMouseDown = isMouseDown;
+    m_isMouseDown = isMouseDown;
 }
 
 void World::initGrid(unsigned m, unsigned n)
@@ -81,7 +80,7 @@ void World::initGrid(unsigned m, unsigned n)
             grid[i][j].body().setPosition(leftPadding() + i * (cellMargin + cellSize),
                                           topPadding() + j * (cellMargin + cellSize));
 
-            if (grid[i][j].is_on() == 0)
+            if (grid[i][j].isOn() == 0)
                 grid[i][j].body().setFillColor(clrBlankCell);
             else
                 grid[i][j].body().setFillColor(clrClickedCell);
@@ -97,22 +96,22 @@ void World::handleHover(sf::Event &event)
 
     bool wasHovered;
     if (x < xCount && y < yCount)
-        wasHovered = grid[x][y].is_hovered();
+        wasHovered = grid[x][y].isHovered();
 
     for (unsigned i = 0; i < xCount; ++i)
     {
         for (unsigned j = 0; j < yCount; ++j)
         {
-            grid[i][j].set_is_hovered(false);
+            grid[i][j].set_isHovered(false);
         }
     }
 
     if (x < xCount && y < yCount)
     {
         if (isMouseDown() && !wasHovered)
-            grid[x][y].set_is_on(!grid[x][y].is_on());
+            grid[x][y].set_isOn(!grid[x][y].isOn());
 
-        grid[x][y].set_is_hovered(true);
+        grid[x][y].set_isHovered(true);
     }
 }
 
@@ -123,7 +122,7 @@ void World::handleClick(sf::Event &event)
     auto y = cellCoords.second;
 
     if (x >= 0 && x < xCount && y >= 0 && y < yCount)
-        grid[x][y].set_is_on(!grid[x][y].is_on());
+        grid[x][y].set_isOn(!grid[x][y].isOn());
 }
 
 void World::drawGrid(sf::RenderWindow &window)
@@ -132,11 +131,11 @@ void World::drawGrid(sf::RenderWindow &window)
     {
         for (unsigned j = 0; j < yCount; ++j)
         {
-            if (grid[i][j].is_on() && grid[i][j].is_hovered())
+            if (grid[i][j].isOn() && grid[i][j].isHovered())
                 grid[i][j].body().setFillColor(clrClickedHoveredCell);
-            else if (grid[i][j].is_on())
+            else if (grid[i][j].isOn())
                 grid[i][j].body().setFillColor(clrClickedCell);
-            else if (grid[i][j].is_hovered())
+            else if (grid[i][j].isHovered())
                 grid[i][j].body().setFillColor(clrHoveredCell);
             else
                 grid[i][j].body().setFillColor(clrBlankCell);

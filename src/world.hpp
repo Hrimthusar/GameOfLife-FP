@@ -44,8 +44,8 @@ public:
     void handleHover(sf::Event &event);
     void handleClick(sf::Event &event);
 
-    bool isMouseDown();
-    bool set_isMouseDown(bool isMouseDown);
+    bool isMouseDown() const;
+    void setIsMouseDown(bool isMouseDown);
 
     /* Colors of cells */
     static const sf::Color clrClickedCell;

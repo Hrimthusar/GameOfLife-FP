@@ -5,12 +5,12 @@
 #include "cell.hpp"
 
 Cell::Cell(sf::RectangleShape body)
-    : m_body(body), m_is_on(false), m_is_hovered(false)
+    : m_body(body), m_isOn(false), m_isHovered(false)
 {
 }
 
 Cell::Cell()
-    : m_body(sf::Vector2f(0, 0)), m_is_on(false), m_is_hovered(false)
+    : m_body(sf::Vector2f(0, 0)), m_isOn(false), m_isHovered(false)
 {
 }
 
@@ -24,23 +24,23 @@ const sf::RectangleShape &Cell::body() const
     return m_body;
 }
 
-bool Cell::is_on() const
+bool Cell::isOn() const
 {
-    return m_is_on;
+    return m_isOn;
 }
 
-void Cell::set_is_on(bool is_on)
+void Cell::set_isOn(bool isOn)
 {
-    m_is_on = is_on;
+    m_isOn = isOn;
 }
 
-bool Cell::is_hovered() const
+bool Cell::isHovered() const
 {
-    return m_is_hovered;
+    return m_isHovered;
 }
 
-void Cell::set_is_hovered(bool is_hovered)
+void Cell::set_isHovered(bool isHovered)
 {
-    m_is_hovered = is_hovered;
+    m_isHovered = isHovered;
 }
 

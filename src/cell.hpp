@@ -3,13 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 
-// TODO refactor: change to camel case all field variables
 class Cell
 {
 private:
     sf::RectangleShape m_body;
-    bool m_is_on;
-    bool m_is_hovered;
+    bool m_isOn;
+    bool m_isHovered;
 
 public:
     Cell();
@@ -18,11 +17,11 @@ public:
     sf::RectangleShape &body();
     const sf::RectangleShape &body() const;
 
-    bool is_on() const;
-    void set_is_on(bool is_on);
+    bool isOn() const;
+    void set_isOn(bool isOn);
 
-    bool is_hovered() const;
-    void set_is_hovered(bool is_hovered);
+    bool isHovered() const;
+    void set_isHovered(bool isHovered);
 };
 
 #endif /* CELL_H */
