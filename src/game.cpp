@@ -14,6 +14,10 @@ Game::Game()
     m_world->initGrid(20, 10);
 }
 
+Game::~Game()
+{
+    delete m_world;
+}
 
 void Game::Run()
 {
@@ -24,11 +28,9 @@ void Game::Run()
         ProcessEvents();
         lastUpdate += clock.restart();
 
-        if (lastUpdate > s_tick) {
-            std::cout << "One second has passed" << std::endl;
-            std::cout << lastUpdate.asMilliseconds() << std::endl;
-            Update(s_tick.asSeconds());
-
+        if (lastUpdate > s_tick)
+        {
+            Update(s_tick.asMilliseconds());
             lastUpdate = sf::Time::Zero;
         }
         Render();
@@ -37,6 +39,8 @@ void Game::Run()
 
 void Game::Update(float dt)
 {
+    std::cout << "One second has passed" << std::endl;
+    std::cout << dt << std::endl;
 }
 
 void Game::Render()

@@ -5,7 +5,7 @@
 #include "cell.hpp"
 
 /* Null, because instance will be initialized on demand. */
-World *World::instance = NULL;
+World *World::s_instance = NULL;
 
 /* Initializing cell colors */
 const sf::Color World::clrClickedCell = sf::Color(0x00, 0x33, 0x66);
@@ -15,12 +15,12 @@ const sf::Color World::clrBlankCell = sf::Color(0xCC, 0xFF, 0xFF);
 
 World *World::getInstance(unsigned w, unsigned h)
 {
-    if (instance == NULL)
+    if (s_instance == NULL)
     {
-        instance = new World(w, h);
+        s_instance = new World(w, h);
     }
 
-    return instance;
+    return s_instance;
 }
 
 World::World(unsigned w, unsigned h)

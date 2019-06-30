@@ -8,7 +8,7 @@ class World
 {
 private:
     /* Here will be the instance stored. */
-    static World *instance;
+    static World *s_instance;
 
     /* Private constructor to prevent instancing. */
     World(unsigned w, unsigned h);
