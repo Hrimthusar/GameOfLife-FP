@@ -97,7 +97,7 @@ void World::handleHover(sf::Event &event)
 
     bool wasHovered;
     if (grid.indicesInBounds(x, y))
-        wasHovered = grid[std::make_pair(x, y)].isHovered();
+        wasHovered = grid[cellCoords].isHovered();
 
     for (auto& element : grid)
         element.setIsHovered(false);
@@ -105,9 +105,9 @@ void World::handleHover(sf::Event &event)
     if (grid.indicesInBounds(x, y))
     {
         if (isMouseDown() && !wasHovered)
-            grid[std::make_pair(x, y)].setIsOn(!grid[std::make_pair(x, y)].isOn());
+            grid[cellCoords].setIsOn(!grid[cellCoords].isOn());
 
-        grid[std::make_pair(x, y)].setIsHovered(true);
+        grid[cellCoords].setIsHovered(true);
     }
 }
 
@@ -118,7 +118,7 @@ void World::handleClick(sf::Event &event)
     auto y = cellCoords.second;
 
     if (grid.indicesInBounds(x, y))
-        grid[std::make_pair(x, y)].setIsOn(!grid[std::make_pair(x, y)].isOn());
+        grid[cellCoords].setIsOn(!grid[cellCoords].isOn());
 }
 
 void World::drawGrid(sf::RenderWindow &window)
@@ -196,7 +196,7 @@ void World::updateGrid()
 //                     int y_new = j + j_move;
 //                     if (x_new >= 0 && x_new < static_cast<int>(xCount) && y_new >= 0 && y_new < static_cast<int>(yCount) && (i_move != 0 || j_move != 0))
 //                     {
-//                         count_cell[i][j] += grid[std::make_pair(x_new, y_new)].isOn();
+//                         count_cell[i][j] += grid[cellCoords].isOn();
 //                     }
 //                 }
 //             }
@@ -207,7 +207,7 @@ void World::updateGrid()
 //     {
 //         for (unsigned j = 0; j < yCount; ++j)
 //         {
-//             auto &element = grid[(std::make_pair(i, j))];
+//             auto &element = grid[cellCoords];
 //             if (element.isOn() && (count_cell[i][j] < 2 || count_cell[i][j] > 3))
 //             {
 //                 element.setIsOn(false);

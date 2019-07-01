@@ -24,7 +24,6 @@ private:
     static int s_xGridChange;
     static int s_yGridChange;
 
-
     bool m_animate = false;
 
     const static unsigned s_windowWidth;

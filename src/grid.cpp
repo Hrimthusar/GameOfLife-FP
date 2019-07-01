@@ -2,21 +2,25 @@
 
 Grid::Grid()
 {
-    // m_pData = new std::vector<std::vector<Cell>>;
-    // std::cout << &m_pData << std::endl;
+    // m_data = new std::vector<std::vector<Cell>>;
+    // std::cout << &m_data << std::endl;
 }
 
 Grid::~Grid()
 {
-    // delete m_pData;
+    // delete m_data;
     m_xSize = 0;
     m_ySize = 0;
 }
 
-
 bool Grid::indicesInBounds(int x, int y)
 {
     return (x >= 0 && x < m_xSize && y >= 0 && y < m_ySize);
+}
+
+bool Grid::indicesInBounds(std::pair<int, int> indices)
+{
+    return indicesInBounds(indices.first, indices.second);
 }
 
 void Grid::resizeMatrix(unsigned xCount, unsigned yCount)
@@ -24,17 +28,17 @@ void Grid::resizeMatrix(unsigned xCount, unsigned yCount)
     m_xSize = xCount;
     m_ySize = yCount;
 
-    // std::cout << &m_pData << std::endl;
+    // std::cout << &m_data << std::endl;
     // std::cout << xCount << ", " << yCount << std::endl;
 
-    // m_pData->resize(xCount);
-    m_pData.resize(xCount);
+    // m_data->resize(xCount);
+    m_data.resize(xCount);
     for (unsigned i = 0; i < xCount; ++i)
     {
         // std::cout << i << std::endl;
 
-        // (*m_pData)[i].resize(yCount);
-        m_pData[i].resize(yCount);
+        // (*m_data)[i].resize(yCount);
+        m_data[i].resize(yCount);
     }
 }
 
@@ -49,7 +53,7 @@ const Cell &Grid::operator[](std::pair<int, int> index) const
     if (index.first >= m_xSize || index.second >= m_ySize)
         throw std::out_of_range("Index out of range");
 
-    return m_pData[index.first][index.second];
+    return m_data[index.first][index.second];
 }
 
 Cell &Grid::operator[](std::pair<int, int> index)
@@ -58,7 +62,7 @@ Cell &Grid::operator[](std::pair<int, int> index)
     if (index.first >= m_xSize || index.second >= m_ySize)
         throw std::out_of_range("Index out of range");
 
-    return m_pData[index.first][index.second];
+    return m_data[index.first][index.second];
 }
 
 Grid::Iterator Grid::begin()

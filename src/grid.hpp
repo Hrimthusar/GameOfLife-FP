@@ -38,6 +38,7 @@ public:
 
     // void insert(const T &value);
     bool indicesInBounds(int x, int y);
+    bool indicesInBounds(std::pair<int, int> indices);
 
     void resizeMatrix(unsigned xCount, unsigned yCount);
     int size() const;
@@ -48,10 +49,10 @@ public:
     Iterator end() ;
 
 private:
-    // std::vector<std::vector<Cell>> *m_pData = nullptr;
-    std::vector<std::vector<Cell>> m_pData;
+    // std::vector<std::vector<Cell>> *m_data = nullptr;
+    std::vector<std::vector<Cell>> m_data;
 
-    // Cell *m_pData = nullptr;
+    // Cell *m_data = nullptr;
     int m_xSize = 0;
     int m_ySize = 0;
 };
@@ -63,7 +64,7 @@ private:
 // Grid::Grid(int nCapacity)
 // {
 //   m_nCapacity = nCapacity;
-//   m_pData = new T[m_nCapacity];
+//   m_data = new T[m_nCapacity];
 // }
 
 #endif // !GRID_H
