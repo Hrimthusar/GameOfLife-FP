@@ -8,58 +8,58 @@
 class Grid
 {
 public:
-  /* The iterator */
-  class Iterator
-  {
-  public:
-    Iterator(Grid *grid, int xIndex, int yIndex, int m_xSize);
+    /* The iterator */
+    class Iterator
+    {
+    public:
+        Iterator(Grid *grid, int xIndex, int yIndex, int m_xSize);
 
-    const Cell &operator*() const;
-    Cell &operator*();
+        const Cell &operator*() const;
+        Cell &operator*();
 
-    Iterator &operator++();
-    bool operator!=(const Iterator &other) const;
+        Iterator &operator++();
+        bool operator!=(const Iterator &other) const;
 
-    std::pair<int, int> getIndices() const;
+        std::pair<int, int> getIndices() const;
 
-  private:
-    Grid *m_pGrid;
-    int m_xIndex = -1;
-    int m_yIndex = -1;
-    int m_xSize = 0;
-  };
+    private:
+        Grid *m_pGrid;
+        int m_xIndex = -1;
+        int m_yIndex = -1;
+        int m_xSize = 0;
+    };
 
 public:
-  // constructors
-  Grid();
-  // explicit Grid(int nSize);
+    // constructors
+    Grid();
+    // explicit Grid(int nSize);
 
-  ~Grid();
+    ~Grid();
 
-  // void insert(const T &value);
-  bool indicesInBounds(int x, int y);
+    // void insert(const T &value);
+    bool indicesInBounds(int x, int y);
 
-  void resizeMatrix(unsigned xCount, unsigned yCount);
-  int size() const;
-  const Cell &operator[](std::pair<int, int> index) const;
-  Cell &operator[](std::pair<int, int> index);
+    void resizeMatrix(unsigned xCount, unsigned yCount);
+    int size() const;
+    const Cell &operator[](std::pair<int, int> index) const;
+    Cell &operator[](std::pair<int, int> index);
 
-  Iterator begin() ;
-  Iterator end() ;
+    Iterator begin() ;
+    Iterator end() ;
 
 private:
-  // std::vector<std::vector<Cell>> *m_pData = nullptr;
-  std::vector<std::vector<Cell>> m_pData;
+    // std::vector<std::vector<Cell>> *m_pData = nullptr;
+    std::vector<std::vector<Cell>> m_pData;
 
-  // Cell *m_pData = nullptr;
-  int m_xSize = 0;
-  int m_ySize = 0;
+    // Cell *m_pData = nullptr;
+    int m_xSize = 0;
+    int m_ySize = 0;
 };
 
 /*
- * Grid
- * methods
- **/
+* Grid
+* methods
+**/
 // Grid::Grid(int nCapacity)
 // {
 //   m_nCapacity = nCapacity;

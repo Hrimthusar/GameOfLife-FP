@@ -2,15 +2,15 @@
 
 Grid::Grid()
 {
-  // m_pData = new std::vector<std::vector<Cell>>;
-  // std::cout << &m_pData << std::endl;
+    // m_pData = new std::vector<std::vector<Cell>>;
+    // std::cout << &m_pData << std::endl;
 }
 
 Grid::~Grid()
 {
-  // delete m_pData;
-  m_xSize = 0;
-  m_ySize = 0;
+    // delete m_pData;
+    m_xSize = 0;
+    m_ySize = 0;
 }
 
 
@@ -21,54 +21,54 @@ bool Grid::indicesInBounds(int x, int y)
 
 void Grid::resizeMatrix(unsigned xCount, unsigned yCount)
 {
-  m_xSize = xCount;
-  m_ySize = yCount;
+    m_xSize = xCount;
+    m_ySize = yCount;
 
-  // std::cout << &m_pData << std::endl;
-  // std::cout << xCount << ", " << yCount << std::endl;
+    // std::cout << &m_pData << std::endl;
+    // std::cout << xCount << ", " << yCount << std::endl;
 
-  // m_pData->resize(xCount);
-  m_pData.resize(xCount);
-  for (unsigned i = 0; i < xCount; ++i)
-  {
-    // std::cout << i << std::endl;
+    // m_pData->resize(xCount);
+    m_pData.resize(xCount);
+    for (unsigned i = 0; i < xCount; ++i)
+    {
+        // std::cout << i << std::endl;
 
-    // (*m_pData)[i].resize(yCount);
-    m_pData[i].resize(yCount);
-  }
+        // (*m_pData)[i].resize(yCount);
+        m_pData[i].resize(yCount);
+    }
 }
 
 int Grid::size() const
 {
-  return m_xSize * m_ySize;
+    return m_xSize * m_ySize;
 }
 
 const Cell &Grid::operator[](std::pair<int, int> index) const
 {
-  // std::cout << "[const]" << std::endl;
-  if (index.first >= m_xSize || index.second >= m_ySize)
-    throw std::out_of_range("Index out of range");
+    // std::cout << "[const]" << std::endl;
+    if (index.first >= m_xSize || index.second >= m_ySize)
+        throw std::out_of_range("Index out of range");
 
-  return m_pData[index.first][index.second];
+    return m_pData[index.first][index.second];
 }
 
 Cell &Grid::operator[](std::pair<int, int> index)
 {
-  // std::cout << "[]" << std::endl;
-  if (index.first >= m_xSize || index.second >= m_ySize)
-    throw std::out_of_range("Index out of range");
+    // std::cout << "[]" << std::endl;
+    if (index.first >= m_xSize || index.second >= m_ySize)
+        throw std::out_of_range("Index out of range");
 
-  return m_pData[index.first][index.second];
+    return m_pData[index.first][index.second];
 }
 
 Grid::Iterator Grid::begin()
 {
-  return Grid::Iterator{this, 0, 0, m_xSize};
+    return Grid::Iterator{this, 0, 0, m_xSize};
 }
 
 Grid::Iterator Grid::end()
 {
-  return Grid::Iterator{this, 0, m_ySize, m_xSize};
+    return Grid::Iterator{this, 0, m_ySize, m_xSize};
 }
 
 /*
@@ -81,15 +81,15 @@ Grid::Iterator::Iterator(Grid *pGrid, int xIndex, int yIndex, int m_xSize)
 
 const Cell &Grid::Iterator::operator*() const
 {
-  // std::cout << "deref " << m_xIndex << "," << m_yIndex << std::endl;
-  return m_pGrid->operator[](std::make_pair(m_xIndex, m_yIndex));
+    // std::cout << "deref " << m_xIndex << "," << m_yIndex << std::endl;
+    return m_pGrid->operator[](std::make_pair(m_xIndex, m_yIndex));
 }
 
 
 Cell& Grid::Iterator::operator*()
 {
-  // std::cout << "derefNonConst" << std::endl;
-  return m_pGrid->operator[](std::make_pair(m_xIndex, m_yIndex));
+    // std::cout << "derefNonConst" << std::endl;
+    return m_pGrid->operator[](std::make_pair(m_xIndex, m_yIndex));
 }
 
 // Cell &Grid::Iterator::operator*()
@@ -100,18 +100,18 @@ Cell& Grid::Iterator::operator*()
 
 typename Grid::Iterator &Grid::Iterator::operator++()
 {
-  if (++m_xIndex >= m_xSize)
-  {
-    m_xIndex = 0;
-    ++m_yIndex;
-  }
-  // std::cout << m_xIndex << "," << m_yIndex << std::endl;
-  return *this;
+    if (++m_xIndex >= m_xSize)
+    {
+        m_xIndex = 0;
+        ++m_yIndex;
+    }
+    // std::cout << m_xIndex << "," << m_yIndex << std::endl;
+    return *this;
 }
 
 bool Grid::Iterator::operator!=(const Grid::Iterator &other) const
 {
-  return m_xIndex != other.m_xIndex || m_yIndex != other.m_yIndex;
+    return m_xIndex != other.m_xIndex || m_yIndex != other.m_yIndex;
 }
 
 std::pair<int, int> Grid::Iterator::getIndices() const
