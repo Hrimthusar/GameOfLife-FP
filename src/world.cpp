@@ -86,7 +86,7 @@ void World::initGrid(unsigned m, unsigned n)
 void World::clearGrid()
 {
     for (auto& element : grid)
-        element.set_isOn(false);
+        element.setIsOn(false);
 }
 
 void World::handleHover(sf::Event &event)
@@ -100,14 +100,14 @@ void World::handleHover(sf::Event &event)
         wasHovered = grid[std::make_pair(x, y)].isHovered();
 
     for (auto& element : grid)
-        element.set_isHovered(false);
+        element.setIsHovered(false);
 
     if (grid.indicesInBounds(x, y))
     {
         if (isMouseDown() && !wasHovered)
-            grid[std::make_pair(x, y)].set_isOn(!grid[std::make_pair(x, y)].isOn());
+            grid[std::make_pair(x, y)].setIsOn(!grid[std::make_pair(x, y)].isOn());
 
-        grid[std::make_pair(x, y)].set_isHovered(true);
+        grid[std::make_pair(x, y)].setIsHovered(true);
     }
 }
 
@@ -118,7 +118,7 @@ void World::handleClick(sf::Event &event)
     auto y = cellCoords.second;
 
     if (grid.indicesInBounds(x, y))
-        grid[std::make_pair(x, y)].set_isOn(!grid[std::make_pair(x, y)].isOn());
+        grid[std::make_pair(x, y)].setIsOn(!grid[std::make_pair(x, y)].isOn());
 }
 
 void World::drawGrid(sf::RenderWindow &window)
@@ -172,50 +172,50 @@ void World::updateGrid()
         int y = indices.second;
 
         if (element.isOn() && (count_cell[x][y] < 2 || count_cell[x][y] > 3))
-            element.set_isOn(false);
+            element.setIsOn(false);
         else if (!element.isOn() && count_cell[x][y] == 3)
-            element.set_isOn(true);
+            element.setIsOn(true);
     }
 }
 
-void World::updateGridOld()
-{
-    static std::vector<std::vector<int>> count_cell(xCount, std::vector<int>(yCount, 0));
-
-    for (unsigned i = 0; i < xCount; ++i)
-    {
-        for (unsigned j = 0; j < yCount; ++j)
-        {
-            count_cell[i][j] = 0;
-            std::vector<int> move{-1, 0, 1};
-            for (int i_move : move)
-            {
-                for (int j_move : move)
-                {
-                    int x_new = i + i_move;
-                    int y_new = j + j_move;
-                    if (x_new >= 0 && x_new < static_cast<int>(xCount) && y_new >= 0 && y_new < static_cast<int>(yCount) && (i_move != 0 || j_move != 0))
-                    {
-                        count_cell[i][j] += grid[std::make_pair(x_new, y_new)].isOn();
-                    }
-                }
-            }
-        }
-    }
-
-    for (unsigned i = 0; i < xCount; ++i)
-    {
-        for (unsigned j = 0; j < yCount; ++j)
-        {
-            auto &element = grid[(std::make_pair(i, j))];
-            if (element.isOn() && (count_cell[i][j] < 2 || count_cell[i][j] > 3))
-            {
-                element.set_isOn(false);
-            }
-            if (!element.isOn() && count_cell[i][j] == 3)
-            {
-                element.set_isOn(true);
-            }
-        }
-    }
-}
+// void World::updateGridOld()
+// {
+//     static std::vector<std::vector<int>> count_cell(xCount, std::vector<int>(yCount, 0));
+//
+//     for (unsigned i = 0; i < xCount; ++i)
+//     {
+//         for (unsigned j = 0; j < yCount; ++j)
+//         {
+//             count_cell[i][j] = 0;
+//             std::vector<int> move{-1, 0, 1};
+//             for (int i_move : move)
+//             {
+//                 for (int j_move : move)
+//                 {
+//                     int x_new = i + i_move;
+//                     int y_new = j + j_move;
+//                     if (x_new >= 0 && x_new < static_cast<int>(xCount) && y_new >= 0 && y_new < static_cast<int>(yCount) && (i_move != 0 || j_move != 0))
+//                     {
+//                         count_cell[i][j] += grid[std::make_pair(x_new, y_new)].isOn();
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//
+//     for (unsigned i = 0; i < xCount; ++i)
+//     {
+//         for (unsigned j = 0; j < yCount; ++j)
+//         {
+//             auto &element = grid[(std::make_pair(i, j))];
+//             if (element.isOn() && (count_cell[i][j] < 2 || count_cell[i][j] > 3))
+//             {
+//                 element.setIsOn(false);
+//             }
+//             if (!element.isOn() && count_cell[i][j] == 3)
+//             {
+//                 element.setIsOn(true);
+//             }
+//         }
+//     }
+// }

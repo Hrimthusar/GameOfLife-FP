@@ -5,7 +5,7 @@
 const unsigned Game::s_windowWidth = sf::VideoMode::getDesktopMode().width * 2 / 3;
 const unsigned Game::s_windowHeight = sf::VideoMode::getDesktopMode().height * 2 / 3;
 
-sf::Time Game::s_tick = sf::seconds(1.0f); // / 60.0f);
+sf::Time Game::s_tick = sf::seconds(1.0f);
 
 Game::Game()
     : m_window(sf::VideoMode(s_windowWidth, s_windowHeight), "Game of Life")
@@ -50,15 +50,6 @@ void Game::Render()
 {
     m_window.clear();
     m_world->drawGrid(m_window);
-
-    // sf::RectangleShape element;
-    // element.setFillColor(sf::Color(0x00, 0x33, 0x66));
-    // element.setSize(sf::Vector2f(300, 300));
-    // element.setPosition(0,0);
-    // m_window.draw(element);
-
-    // std::cout << "Crtam " << i << "," << j << " isOn: " << element.isOn() << std::endl;
-
     m_window.display();
 }
 

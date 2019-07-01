@@ -46,7 +46,7 @@ bool Cell::isOn() const
     return m_isOn;
 }
 
-void Cell::set_isOn(bool isOn)
+void Cell::setIsOn(bool isOn)
 {
     m_isOn = isOn;
 }
@@ -56,7 +56,7 @@ bool Cell::isHovered() const
     return m_isHovered;
 }
 
-void Cell::set_isHovered(bool isHovered)
+void Cell::setIsHovered(bool isHovered)
 {
     m_isHovered = isHovered;
 }

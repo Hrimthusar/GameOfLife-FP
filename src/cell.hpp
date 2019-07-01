@@ -21,10 +21,10 @@ public:
     void setCellColor();
 
     bool isOn() const;
-    void set_isOn(bool isOn);
+    void setIsOn(bool isOn);
 
     bool isHovered() const;
-    void set_isHovered(bool isHovered);
+    void setIsHovered(bool isHovered);
 
     static const sf::Color clrClickedCell;
     static const sf::Color clrClickedHoveredCell;
