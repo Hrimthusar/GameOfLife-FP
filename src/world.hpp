@@ -2,6 +2,7 @@
 #define WORLD_H
 
 #include <SFML/Graphics.hpp>
+#include "grid.hpp"
 #include "cell.hpp"
 
 class World
@@ -28,7 +29,7 @@ private:
 
     bool m_isMouseDown = false;
 
-    std::vector<std::vector<Cell>> grid;
+    Grid grid;
 
 public:
     /* Static access method. */
@@ -42,7 +43,6 @@ public:
     void initGrid(unsigned m, unsigned n);
     void drawGrid(sf::RenderWindow &window);
     void updateGrid();
-
 
     void handleHover(sf::Event &event);
     void handleClick(sf::Event &event);

@@ -25,6 +25,7 @@ World *World::getInstance(unsigned w, unsigned h)
 
 World::World(unsigned w, unsigned h)
     : screenWidth(w), screenHeight(h)
+// , grid()
 {
 }
 
@@ -68,22 +69,31 @@ void World::initGrid(unsigned m, unsigned n)
     innerWidth = ((cellSize + cellMargin) * xCount) - cellMargin;
     innerHeight = ((cellSize + cellMargin) * yCount) - cellMargin;
 
-    grid.resize(xCount);
-    for (unsigned i = 0; i < xCount; ++i)
-        grid[i].resize(yCount);
+    grid.resizeMatrix(xCount, yCount);
 
     for (unsigned i = 0; i < xCount; ++i)
     {
         for (unsigned j = 0; j < yCount; ++j)
         {
-            grid[i][j].body().setSize(sf::Vector2f(cellSize, cellSize));
-            grid[i][j].body().setPosition(leftPadding() + i * (cellMargin + cellSize),
-                                          topPadding() + j * (cellMargin + cellSize));
 
-            if (grid[i][j].isOn() == 0)
-                grid[i][j].body().setFillColor(clrBlankCell);
+            auto &element = grid[std::make_pair(i, j)];
+
+            element.body().setSize(sf::Vector2f(cellSize, cellSize));
+            std::cout << i << ", " << j << std::endl;
+
+            element.body().setPosition(leftPadding() + i * (cellMargin + cellSize),
+                                       topPadding() + j * (cellMargin + cellSize));
+
+            std::cout << element.body().getPosition().x
+                      << "," << element.body().getPosition().y << std::endl;
+
+            std::cout
+                << "^^^^^^^ " << std::endl;
+
+            if (element.isOn() == 0)
+                element.body().setFillColor(clrBlankCell);
             else
-                grid[i][j].body().setFillColor(clrClickedCell);
+                element.body().setFillColor(clrClickedCell);
         }
     }
 };
@@ -96,22 +106,23 @@ void World::handleHover(sf::Event &event)
 
     bool wasHovered;
     if (x < xCount && y < yCount)
-        wasHovered = grid[x][y].isHovered();
+        wasHovered = grid[std::make_pair(x, y)].isHovered();
 
     for (unsigned i = 0; i < xCount; ++i)
     {
         for (unsigned j = 0; j < yCount; ++j)
         {
-            grid[i][j].set_isHovered(false);
+            grid[std::make_pair(i, j)].set_isHovered(false);
         }
     }
 
     if (x < xCount && y < yCount)
     {
+        // std::cout << "Hoverovan :" << x << "," << y << std::endl;
         if (isMouseDown() && !wasHovered)
-            grid[x][y].set_isOn(!grid[x][y].isOn());
+            grid[std::make_pair(x, y)].set_isOn(!grid[std::make_pair(x, y)].isOn());
 
-        grid[x][y].set_isHovered(true);
+        grid[std::make_pair(x, y)].set_isHovered(true);
     }
 }
 
@@ -122,31 +133,53 @@ void World::handleClick(sf::Event &event)
     auto y = cellCoords.second;
 
     if (x >= 0 && x < xCount && y >= 0 && y < yCount)
-        grid[x][y].set_isOn(!grid[x][y].isOn());
+        grid[std::make_pair(x, y)].set_isOn(!grid[std::make_pair(x, y)].isOn());
 }
 
 void World::drawGrid(sf::RenderWindow &window)
 {
-    for (unsigned i = 0; i < xCount; ++i)
+    // for (unsigned i = 0; i < xCount; ++i)
+    // {
+    //     for (unsigned j = 0; j < yCount; ++j)
+    //     {
+    //         auto &element = grid[std::make_pair(i, j)];
+
+    //         std::cout << "Crtam " << i << "," << j <<
+    //         " pos: " << element.body().getPosition().x << ","
+    //         << element.body().getPosition().x << std::endl;
+
+    //         if (element.isOn() && element.isHovered())
+    //             element.body().setFillColor(clrClickedHoveredCell);
+    //         else if (element.isOn())
+    //             element.body().setFillColor(clrClickedCell);
+    //         else if (element.isHovered())
+    //             element.body().setFillColor(clrHoveredCell);
+    //         else
+    //             element.body().setFillColor(clrBlankCell);
+    //         window.draw(element.body());
+    //     }
+    // }
+
+    int i = 0;
+    for (auto it = grid.begin(); it != grid.end(); ++it)
     {
-        for (unsigned j = 0; j < yCount; ++j)
-        {
-            if (grid[i][j].isOn() && grid[i][j].isHovered())
-                grid[i][j].body().setFillColor(clrClickedHoveredCell);
-            else if (grid[i][j].isOn())
-                grid[i][j].body().setFillColor(clrClickedCell);
-            else if (grid[i][j].isHovered())
-                grid[i][j].body().setFillColor(clrHoveredCell);
-            else
-                grid[i][j].body().setFillColor(clrBlankCell);
-            window.draw(grid[i][j].body());
-        }
+        std::cout << "ITERATOR " << i++ << std::endl;
+        auto element = *it;
+        if (element.isOn() && element.isHovered())
+            element.body().setFillColor(clrClickedHoveredCell);
+        else if (element.isOn())
+            element.body().setFillColor(clrClickedCell);
+        else if (element.isHovered())
+            element.body().setFillColor(clrHoveredCell);
+        else
+            element.body().setFillColor(clrBlankCell);
+        window.draw(element.body());
     }
 }
 
 void World::updateGrid()
 {
-    static std::vector<std::vector<int>> count_cell(xCount, std::vector<int> (yCount, 0));
+    static std::vector<std::vector<int>> count_cell(xCount, std::vector<int>(yCount, 0));
 
     for (unsigned i = 0; i < xCount; ++i)
     {
@@ -154,17 +187,15 @@ void World::updateGrid()
         {
             count_cell[i][j] = 0;
             std::vector<int> move{-1, 0, 1};
-            for ( int i_move : move )
+            for (int i_move : move)
             {
-                for ( int j_move : move )
+                for (int j_move : move)
                 {
                     int x_new = i + i_move;
                     int y_new = j + j_move;
-                    if (x_new >= 0 && x_new < static_cast<int>(xCount)
-                            && y_new >= 0 && y_new < static_cast<int>(yCount)
-                            && (i_move != 0 || j_move != 0))
+                    if (x_new >= 0 && x_new < static_cast<int>(xCount) && y_new >= 0 && y_new < static_cast<int>(yCount) && (i_move != 0 || j_move != 0))
                     {
-                        count_cell[i][j] += grid[x_new][y_new].isOn();
+                        count_cell[i][j] += grid[std::make_pair(x_new, y_new)].isOn();
                     }
                 }
             }
@@ -175,15 +206,15 @@ void World::updateGrid()
     {
         for (unsigned j = 0; j < yCount; ++j)
         {
-            if (grid[i][j].isOn() && (count_cell[i][j] < 2 || count_cell[i][j] > 3))
+            auto &element = grid[(std::make_pair(i, j))];
+            if (element.isOn() && (count_cell[i][j] < 2 || count_cell[i][j] > 3))
             {
-                grid[i][j].set_isOn(false);
+                element.set_isOn(false);
             }
-            if (!grid[i][j].isOn() && count_cell[i][j] == 3)
+            if (!element.isOn() && count_cell[i][j] == 3)
             {
-                grid[i][j].set_isOn(true);
+                element.set_isOn(true);
             }
         }
     }
 }
-

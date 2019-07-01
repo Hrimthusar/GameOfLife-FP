@@ -14,12 +14,12 @@ Cell::Cell()
 {
 }
 
-sf::RectangleShape &Cell::body()
+const sf::RectangleShape &Cell::body() const
 {
     return m_body;
 }
 
-const sf::RectangleShape &Cell::body() const
+sf::RectangleShape &Cell::body()
 {
     return m_body;
 }
@@ -43,4 +43,3 @@ void Cell::set_isHovered(bool isHovered)
 {
     m_isHovered = isHovered;
 }
-
