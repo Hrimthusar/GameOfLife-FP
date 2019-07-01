@@ -78,6 +78,11 @@ void Game::ProcessEvents()
             m_animate = !m_animate;
         }
 
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R)
+        {
+            m_world->clearGrid();
+        }
+
         if (event.type == sf::Event::MouseMoved)
             m_world->handleHover(event);
 

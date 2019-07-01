@@ -13,6 +13,12 @@ Grid::~Grid()
   m_ySize = 0;
 }
 
+
+bool Grid::indicesInBounds(int x, int y)
+{
+    return (x >= 0 && x < m_xSize && y >= 0 && y < m_ySize);
+}
+
 void Grid::resizeMatrix(unsigned xCount, unsigned yCount)
 {
   m_xSize = xCount;
@@ -25,7 +31,7 @@ void Grid::resizeMatrix(unsigned xCount, unsigned yCount)
   m_pData.resize(xCount);
   for (unsigned i = 0; i < xCount; ++i)
   {
-    std::cout << i << std::endl;
+    // std::cout << i << std::endl;
 
     // (*m_pData)[i].resize(yCount);
     m_pData[i].resize(yCount);
@@ -107,3 +113,9 @@ bool Grid::Iterator::operator!=(const Grid::Iterator &other) const
 {
   return m_xIndex != other.m_xIndex || m_yIndex != other.m_yIndex;
 }
+
+std::pair<int, int> Grid::Iterator::getIndices() const
+{
+    return std::make_pair(m_xIndex, m_yIndex);
+}
+

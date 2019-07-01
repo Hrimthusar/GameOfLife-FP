@@ -41,8 +41,12 @@ public:
     unsigned topPadding();
 
     void initGrid(unsigned m, unsigned n);
+    void clearGrid();
     void drawGrid(sf::RenderWindow &window);
+    void updateGridOld();
     void updateGrid();
+    void updateNeighbourCount(std::pair<int, int> indices,
+                                std::vector<std::vector<int>>& count_cell);
 
     void handleHover(sf::Event &event);
     void handleClick(sf::Event &event);

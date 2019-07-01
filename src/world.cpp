@@ -3,6 +3,8 @@
 #include <iostream>
 #include "world.hpp"
 #include "cell.hpp"
+#include <algorithm>
+#include <range/v3/view/cartesian_product.hpp>
 
 /* Null, because instance will be initialized on demand. */
 World *World::s_instance = NULL;
@@ -25,7 +27,6 @@ World *World::getInstance(unsigned w, unsigned h)
 
 World::World(unsigned w, unsigned h)
     : screenWidth(w), screenHeight(h)
-// , grid()
 {
 }
 
@@ -71,30 +72,22 @@ void World::initGrid(unsigned m, unsigned n)
 
     grid.resizeMatrix(xCount, yCount);
 
-    for (unsigned i = 0; i < xCount; ++i)
+    for (auto it = grid.begin(); it != grid.end(); ++it)
     {
-        for (unsigned j = 0; j < yCount; ++j)
-        {
+        Cell& element = *it;
+        auto indices = it.getIndices();
 
-            auto &element = grid[std::make_pair(i, j)];
-
-            element.body().setSize(sf::Vector2f(cellSize, cellSize));
-            // std::cout << i << ", " << j << std::endl;
-
-            element.body().setPosition(leftPadding() + i * (cellMargin + cellSize),
-                                       topPadding() + j * (cellMargin + cellSize));
-
-            // std::cout << element.body().getPosition().x << "," << element.body().getPosition().y << std::endl;
-
-            // std::cout << "^^^^^^^ " << std::endl;
-
-            //if (element.isOn() == 0)
-                //element.body().setFillColor(clrBlankCell);
-            //else
-                //element.body().setFillColor(clrClickedCell);
-        }
+        element.body().setSize(sf::Vector2f(cellSize, cellSize));
+        element.body().setPosition(leftPadding() + indices.first * (cellMargin + cellSize),
+                                   topPadding() + indices.second * (cellMargin + cellSize));
     }
 };
+
+void World::clearGrid()
+{
+    for (auto& element : grid)
+        element.set_isOn(false);
+}
 
 void World::handleHover(sf::Event &event)
 {
@@ -103,22 +96,14 @@ void World::handleHover(sf::Event &event)
     auto y = cellCoords.second;
 
     bool wasHovered;
-    if (x < xCount && y < yCount)
+    if (grid.indicesInBounds(x, y))
         wasHovered = grid[std::make_pair(x, y)].isHovered();
 
-    for (Cell& element : grid)
+    for (auto& element : grid)
         element.set_isHovered(false);
-    //for (unsigned i = 0; i < xCount; ++i)
-    //{
-    //    for (unsigned j = 0; j < yCount; ++j)
-    //    {
-    //        grid[std::make_pair(i, j)].set_isHovered(false);
-    //    }
-    //}
 
-    if (x < xCount && y < yCount)
+    if (grid.indicesInBounds(x, y))
     {
-        // std::cout << "Hoverovan :" << x << "," << y << std::endl;
         if (isMouseDown() && !wasHovered)
             grid[std::make_pair(x, y)].set_isOn(!grid[std::make_pair(x, y)].isOn());
 
@@ -132,51 +117,68 @@ void World::handleClick(sf::Event &event)
     auto x = cellCoords.first;
     auto y = cellCoords.second;
 
-    if (x < xCount && y < yCount)
+    if (grid.indicesInBounds(x, y))
         grid[std::make_pair(x, y)].set_isOn(!grid[std::make_pair(x, y)].isOn());
 }
 
 void World::drawGrid(sf::RenderWindow &window)
 {
-    // for (unsigned i = 0; i < xCount; ++i)
-    // {
-    //     for (unsigned j = 0; j < yCount; ++j)
-    //     {
-    //         auto &element = grid[std::make_pair(i, j)];
-
-    //         std::cout << "Crtam " << i << "," << j <<
-    //         " pos: " << element.body().getPosition().x << ","
-    //         << element.body().getPosition().x << std::endl;
-
-    //         if (element.isOn() && element.isHovered())
-    //             element.body().setFillColor(clrClickedHoveredCell);
-    //         else if (element.isOn())
-    //             element.body().setFillColor(clrClickedCell);
-    //         else if (element.isHovered())
-    //             element.body().setFillColor(clrHoveredCell);
-    //         else
-    //             element.body().setFillColor(clrBlankCell);
-    //         window.draw(element.body());
-    //     }
-    // }
-
-
-    for (Cell& el : grid)
+    for (auto& el : grid)
     {
         el.setCellColor();
         window.draw(el.body());
     }
+}
 
-    //for (auto it = grid.begin(); it != grid.end(); ++it)
-    //{
-    //    std::cout << "-------------wow";
-    //    auto element = *it;
-    //    element.setCellColor();
-    //    window.draw(element.body());
-    //}
+void World::updateNeighbourCount(std::pair<int, int> indices,
+                                    std::vector<std::vector<int>>& count_cell)
+{
+    int i = indices.first;
+    int j = indices.second;
+
+    static std::vector<int> step{-1, 0, 1};
+    static auto steps = ranges::v3::view::cartesian_product(step, step);
+
+    for (std::tuple<int, int> &&el : steps)
+    {
+        int i_step = std::get<0>(el);
+        int j_step = std::get<1>(el);
+        int x_new = i + i_step;
+        int y_new = j + j_step;
+
+        if (grid.indicesInBounds(x_new, y_new) && (i_step != 0 || j_step != 0))
+            count_cell[x_new][y_new] += 1;
+    }
 }
 
 void World::updateGrid()
+{
+    std::vector<std::vector<int>> count_cell(xCount, std::vector<int>(yCount, 0));
+
+    for (auto it = grid.begin(); it != grid.end(); ++it)
+    {
+        Cell& element = *it;
+        auto indices = it.getIndices();
+
+        if (element.isOn())
+            updateNeighbourCount(indices, count_cell);
+    }
+
+    for (auto it = grid.begin(); it != grid.end(); ++it)
+    {
+        Cell& element = *it;
+        auto indices = it.getIndices();
+        int x = indices.first;
+        int y = indices.second;
+
+        if (element.isOn() && (count_cell[x][y] < 2 || count_cell[x][y] > 3))
+            element.set_isOn(false);
+        else if (!element.isOn() && count_cell[x][y] == 3)
+            element.set_isOn(true);
+    }
+}
+
+void World::updateGridOld()
 {
     static std::vector<std::vector<int>> count_cell(xCount, std::vector<int>(yCount, 0));
 

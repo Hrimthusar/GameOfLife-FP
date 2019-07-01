@@ -20,6 +20,8 @@ public:
     Iterator &operator++();
     bool operator!=(const Iterator &other) const;
 
+    std::pair<int, int> getIndices() const;
+
   private:
     Grid *m_pGrid;
     int m_xIndex = -1;
@@ -35,6 +37,7 @@ public:
   ~Grid();
 
   // void insert(const T &value);
+  bool indicesInBounds(int x, int y);
 
   void resizeMatrix(unsigned xCount, unsigned yCount);
   int size() const;
