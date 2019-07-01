@@ -90,10 +90,10 @@ void World::initGrid(unsigned m, unsigned n)
             std::cout
                 << "^^^^^^^ " << std::endl;
 
-            if (element.isOn() == 0)
-                element.body().setFillColor(clrBlankCell);
-            else
-                element.body().setFillColor(clrClickedCell);
+            //if (element.isOn() == 0)
+                //element.body().setFillColor(clrBlankCell);
+            //else
+                //element.body().setFillColor(clrClickedCell);
         }
     }
 };
@@ -160,21 +160,23 @@ void World::drawGrid(sf::RenderWindow &window)
     //     }
     // }
 
-    int i = 0;
-    for (auto it = grid.begin(); it != grid.end(); ++it)
+
+    // TODO: ovde bi mnogo lepse bilo da se iterira sa Cell& el,
+    //          ali za to treba da se implementira jos neki iterator valjda
+    //          gubi se sa constovima
+    for (Cell el : grid)
     {
-        std::cout << "ITERATOR " << i++ << std::endl;
-        auto element = *it;
-        if (element.isOn() && element.isHovered())
-            element.body().setFillColor(clrClickedHoveredCell);
-        else if (element.isOn())
-            element.body().setFillColor(clrClickedCell);
-        else if (element.isHovered())
-            element.body().setFillColor(clrHoveredCell);
-        else
-            element.body().setFillColor(clrBlankCell);
-        window.draw(element.body());
+        el.setCellColor();
+        window.draw(el.body());
     }
+
+    //for (auto it = grid.begin(); it != grid.end(); ++it)
+    //{
+    //    std::cout << "-------------wow";
+    //    auto element = *it;
+    //    element.setCellColor();
+    //    window.draw(element.body());
+    //}
 }
 
 void World::updateGrid()
