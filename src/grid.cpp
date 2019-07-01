@@ -3,7 +3,7 @@
 Grid::Grid()
 {
   // m_pData = new std::vector<std::vector<Cell>>;
-  std::cout << &m_pData << std::endl;
+  // std::cout << &m_pData << std::endl;
 }
 
 Grid::~Grid()
@@ -18,8 +18,8 @@ void Grid::resizeMatrix(unsigned xCount, unsigned yCount)
   m_xSize = xCount;
   m_ySize = yCount;
 
-  std::cout << &m_pData << std::endl;
-  std::cout << xCount << ", " << yCount << std::endl;
+  // std::cout << &m_pData << std::endl;
+  // std::cout << xCount << ", " << yCount << std::endl;
 
   // m_pData->resize(xCount);
   m_pData.resize(xCount);
@@ -55,12 +55,12 @@ Cell &Grid::operator[](std::pair<int, int> index)
   return m_pData[index.first][index.second];
 }
 
-Grid::Iterator Grid::begin() const
+Grid::Iterator Grid::begin()
 {
   return Grid::Iterator{this, 0, 0, m_xSize};
 }
 
-Grid::Iterator Grid::end() const
+Grid::Iterator Grid::end()
 {
   return Grid::Iterator{this, 0, m_ySize, m_xSize};
 }
@@ -68,14 +68,21 @@ Grid::Iterator Grid::end() const
 /*
  * Iterator methods
  **/
-Grid::Iterator::Iterator(const Grid *pGrid, int xIndex, int yIndex, int m_xSize)
+Grid::Iterator::Iterator(Grid *pGrid, int xIndex, int yIndex, int m_xSize)
     : m_pGrid(pGrid), m_xIndex(xIndex), m_yIndex(yIndex), m_xSize(m_xSize)
 {
 }
 
 const Cell &Grid::Iterator::operator*() const
 {
-  std::cout << "deref " << m_xIndex << "," << m_yIndex << std::endl;
+  // std::cout << "deref " << m_xIndex << "," << m_yIndex << std::endl;
+  return m_pGrid->operator[](std::make_pair(m_xIndex, m_yIndex));
+}
+
+
+Cell& Grid::Iterator::operator*()
+{
+  // std::cout << "derefNonConst" << std::endl;
   return m_pGrid->operator[](std::make_pair(m_xIndex, m_yIndex));
 }
 
@@ -92,7 +99,7 @@ typename Grid::Iterator &Grid::Iterator::operator++()
     m_xIndex = 0;
     ++m_yIndex;
   }
-  std::cout << m_xIndex << "," << m_yIndex << std::endl;
+  // std::cout << m_xIndex << "," << m_yIndex << std::endl;
   return *this;
 }
 

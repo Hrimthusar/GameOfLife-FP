@@ -12,14 +12,16 @@ public:
   class Iterator
   {
   public:
-    Iterator(const Grid *grid, int xIndex, int yIndex, int m_xSize);
+    Iterator(Grid *grid, int xIndex, int yIndex, int m_xSize);
+
     const Cell &operator*() const;
-    // Cell &operator*();
+    Cell &operator*();
+
     Iterator &operator++();
     bool operator!=(const Iterator &other) const;
 
   private:
-    const Grid *m_pGrid;
+    Grid *m_pGrid;
     int m_xIndex = -1;
     int m_yIndex = -1;
     int m_xSize = 0;
@@ -39,8 +41,8 @@ public:
   const Cell &operator[](std::pair<int, int> index) const;
   Cell &operator[](std::pair<int, int> index);
 
-  Iterator begin() const;
-  Iterator end() const;
+  Iterator begin() ;
+  Iterator end() ;
 
 private:
   // std::vector<std::vector<Cell>> *m_pData = nullptr;

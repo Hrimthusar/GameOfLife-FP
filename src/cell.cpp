@@ -19,7 +19,6 @@ Cell::Cell()
 {
 }
 
-
 void Cell::setCellColor()
 {
     if (isOn() && isHovered())

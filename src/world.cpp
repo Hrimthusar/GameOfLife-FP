@@ -79,16 +79,14 @@ void World::initGrid(unsigned m, unsigned n)
             auto &element = grid[std::make_pair(i, j)];
 
             element.body().setSize(sf::Vector2f(cellSize, cellSize));
-            std::cout << i << ", " << j << std::endl;
+            // std::cout << i << ", " << j << std::endl;
 
             element.body().setPosition(leftPadding() + i * (cellMargin + cellSize),
                                        topPadding() + j * (cellMargin + cellSize));
 
-            std::cout << element.body().getPosition().x
-                      << "," << element.body().getPosition().y << std::endl;
+            // std::cout << element.body().getPosition().x << "," << element.body().getPosition().y << std::endl;
 
-            std::cout
-                << "^^^^^^^ " << std::endl;
+            // std::cout << "^^^^^^^ " << std::endl;
 
             //if (element.isOn() == 0)
                 //element.body().setFillColor(clrBlankCell);
@@ -108,13 +106,15 @@ void World::handleHover(sf::Event &event)
     if (x < xCount && y < yCount)
         wasHovered = grid[std::make_pair(x, y)].isHovered();
 
-    for (unsigned i = 0; i < xCount; ++i)
-    {
-        for (unsigned j = 0; j < yCount; ++j)
-        {
-            grid[std::make_pair(i, j)].set_isHovered(false);
-        }
-    }
+    for (Cell& element : grid)
+        element.set_isHovered(false);
+    //for (unsigned i = 0; i < xCount; ++i)
+    //{
+    //    for (unsigned j = 0; j < yCount; ++j)
+    //    {
+    //        grid[std::make_pair(i, j)].set_isHovered(false);
+    //    }
+    //}
 
     if (x < xCount && y < yCount)
     {
@@ -132,7 +132,7 @@ void World::handleClick(sf::Event &event)
     auto x = cellCoords.first;
     auto y = cellCoords.second;
 
-    if (x >= 0 && x < xCount && y >= 0 && y < yCount)
+    if (x < xCount && y < yCount)
         grid[std::make_pair(x, y)].set_isOn(!grid[std::make_pair(x, y)].isOn());
 }
 
@@ -161,10 +161,7 @@ void World::drawGrid(sf::RenderWindow &window)
     // }
 
 
-    // TODO: ovde bi mnogo lepse bilo da se iterira sa Cell& el,
-    //          ali za to treba da se implementira jos neki iterator valjda
-    //          gubi se sa constovima
-    for (Cell el : grid)
+    for (Cell& el : grid)
     {
         el.setCellColor();
         window.draw(el.body());
