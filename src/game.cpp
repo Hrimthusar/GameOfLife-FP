@@ -30,6 +30,7 @@ void Game::Run()
 {
     sf::Clock clock;
     sf::Time lastUpdate = sf::Time::Zero;
+
     while (m_window.isOpen())
     {
         ProcessEvents();
@@ -56,10 +57,11 @@ void Game::Render()
 {
     m_window.clear();
     m_world->drawGrid(m_window);
+    m_world->drawInfo(m_window, s_tick, m_animate, s_xGridSize, s_yGridSize);
     m_window.display();
 }
 
-void Game::processKeyboardEvents(sf::Event& event)
+void Game::processKeyboardEvents(sf::Event &event)
 {
     switch (event.key.code)
     {

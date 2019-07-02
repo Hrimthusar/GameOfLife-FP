@@ -6,7 +6,6 @@
 class Cell
 {
 private:
-
     sf::RectangleShape m_body;
     bool m_isOn;
     bool m_isHovered;
@@ -18,13 +17,13 @@ public:
     sf::RectangleShape &body();
     const sf::RectangleShape &body() const;
 
-    void setCellColor();
-
     bool isOn() const;
     void setIsOn(bool isOn);
 
     bool isHovered() const;
     void setIsHovered(bool isHovered);
+
+    void setCellColor();
 
     static const sf::Color clrClickedCell;
     static const sf::Color clrClickedHoveredCell;

@@ -19,18 +19,6 @@ Cell::Cell()
 {
 }
 
-void Cell::setCellColor()
-{
-    if (isOn() && isHovered())
-        m_body.setFillColor(clrClickedHoveredCell);
-    else if (m_isOn)
-        m_body.setFillColor(clrClickedCell);
-    else if (m_isHovered)
-        m_body.setFillColor(clrHoveredCell);
-    else
-        m_body.setFillColor(clrBlankCell);
-}
-
 const sf::RectangleShape &Cell::body() const
 {
     return m_body;
@@ -59,4 +47,16 @@ bool Cell::isHovered() const
 void Cell::setIsHovered(bool isHovered)
 {
     m_isHovered = isHovered;
+}
+
+void Cell::setCellColor()
+{
+    if (isOn() && isHovered())
+        m_body.setFillColor(clrClickedHoveredCell);
+    else if (m_isOn)
+        m_body.setFillColor(clrClickedCell);
+    else if (m_isHovered)
+        m_body.setFillColor(clrHoveredCell);
+    else
+        m_body.setFillColor(clrBlankCell);
 }

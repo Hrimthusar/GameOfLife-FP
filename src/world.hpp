@@ -24,8 +24,9 @@ private:
     unsigned yCount;
 
     unsigned cellSize;
-
     unsigned cellMargin = 5;
+
+    unsigned cellCount = 0;
 
     bool m_isMouseDown = false;
 
@@ -43,10 +44,12 @@ public:
     void initGrid(unsigned m, unsigned n);
     void clearGrid();
     void drawGrid(sf::RenderWindow &window);
+    void drawInfo(sf::RenderWindow &window, sf::Time tick,
+                  bool animate, int s_xGridSize, int s_yGridSize);
     // void updateGridOld();
     void updateGrid();
     void updateNeighbourCount(std::pair<int, int> indices,
-                                std::vector<std::vector<int>>& count_cell);
+                              std::vector<std::vector<int>> &count_cell);
 
     void handleHover(sf::Event &event);
     void handleClick(sf::Event &event);
@@ -59,6 +62,8 @@ public:
     static const sf::Color clrClickedHoveredCell;
     static const sf::Color clrHoveredCell;
     static const sf::Color clrBlankCell;
+
+    static sf::Font font;
 };
 
 #endif /* WORLD_H */
