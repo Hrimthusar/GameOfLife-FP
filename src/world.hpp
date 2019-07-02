@@ -26,6 +26,8 @@ private:
     unsigned cellSize;
     unsigned cellMargin = 5;
 
+    unsigned statusHeight = 50;
+
     unsigned cellCount = 0;
 
     bool m_isMouseDown = false;

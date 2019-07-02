@@ -10,8 +10,8 @@
 <br />
 
 <p align="center">
-  <img src="https://screenhubweb.files.wordpress.com/2019/06/keanu-reeves-cyberpunk-2077-screenhub-entertainment.jpg"
-         alt="Sponsored by Evil Martians" width="500">
+  <img src="resources/images/GameOfLife.png?raw=true"
+         alt="Screen shot" width="500">
 </p>
 
 
@@ -27,6 +27,8 @@
 ## Table of Contents
 - [Installation](#installation)
 - [Running](#running)
+- [Controls](#controls)
+
 
 ## Installation
 ```sh
@@ -59,4 +61,18 @@ For others look at <a href="https://www.sfml-dev.org/download.php">SFML website<
 $ make
 $ ./build/game_of_life
 ```
+
+## Controls :video_game:
+
+| Key | Action |
+| --- | --- |
+| Esc/X | Close the application |
+| G | Start/stop the animation |
+| R | Clear the grid |
+| H | **H**igher speed |
+| L | **L**ower speed |
+| B | **B**igger grid |
+| S | **S**maller grid |
+
+
 

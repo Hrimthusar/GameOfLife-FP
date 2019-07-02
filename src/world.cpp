@@ -72,7 +72,7 @@ void World::initGrid(unsigned m, unsigned n)
     yCount = n;
 
     unsigned cellSizeX = (screenWidth - cellMargin) / xCount;
-    unsigned cellSizeY = (screenHeight - cellMargin) / yCount;
+    unsigned cellSizeY = (screenHeight - cellMargin - statusHeight) / yCount;
 
     cellSize = std::min(cellSizeX, cellSizeY) - cellMargin;
 
@@ -153,12 +153,12 @@ void World::drawGrid(sf::RenderWindow &window)
     }
 }
 
-void World::drawInfo(sf::RenderWindow &window,
-    sf::Time tick, bool animate, int xSize, int ySize)
+void World::drawInfo(sf::RenderWindow &window, sf::Time tick, 
+                     bool animate, int xSize, int ySize)
 {
     sf::Text text;
     text.setFont(font);
-    text.setCharacterSize(30);
+    text.setCharacterSize(statusHeight - 20);
     text.setFillColor(sf::Color::White);
     text.setPosition(20, 10);
 
@@ -171,9 +171,6 @@ void World::drawInfo(sf::RenderWindow &window,
         << "play " << animate;
 
     text.setString(oss.str());
-
-    // text.setStyle(sf::Text::Bold | sf::Text::Underlined);
-
     window.draw(text);
 }
 
