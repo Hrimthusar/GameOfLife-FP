@@ -63,7 +63,6 @@ $ ./build/game_of_life
 ```
 
 ## Controls
-:video_game:
 | Key | Action |
 | --- | --- |
 | Esc/X | Close the application |
