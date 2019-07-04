@@ -4,6 +4,11 @@
 #include <SFML/Graphics.hpp>
 #include "grid.hpp"
 #include "cell.hpp"
+#include <range/v3/view.hpp>
+
+
+using namespace ranges::v3;
+
 
 class World
 {
@@ -43,15 +48,14 @@ public:
     unsigned leftPadding();
     unsigned topPadding();
 
-    void initGrid(unsigned m, unsigned n);
+    void initGrid(unsigned xNum, unsigned yNum);
     void clearGrid();
     void drawGrid(sf::RenderWindow &window);
     void drawInfo(sf::RenderWindow &window, sf::Time tick,
                   bool animate, int s_xGridSize, int s_yGridSize);
     // void updateGridOld();
     void updateGrid();
-    void updateNeighbourCount(std::pair<int, int> indices,
-                              std::vector<std::vector<int>> &count_cell);
+    int countNeighbours(std::pair<Cell, ranges::common_tuple<int, int>> indexedCell);
 
     void handleHover(sf::Event &event);
     void handleClick(sf::Event &event);

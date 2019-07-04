@@ -9,10 +9,10 @@ sf::Time Game::s_tick = sf::seconds(1.0f);
 sf::Time Game::s_fastest_tick = sf::seconds(0.1f);
 sf::Time Game::s_slowest_tick = sf::seconds(2.0f);
 sf::Time Game::s_tick_change = sf::seconds(0.1f);
-int Game::s_xGridSize = 20;
-int Game::s_yGridSize = 10;
-int Game::s_xGridChange = 10;
-int Game::s_yGridChange = 5;
+int Game::s_xGridSize = 10;
+int Game::s_yGridSize = 20;
+int Game::s_xGridChange = 5;
+int Game::s_yGridChange = 10;
 
 Game::Game()
     : m_window(sf::VideoMode(s_windowWidth, s_windowHeight), "Game of Life")
@@ -131,15 +131,17 @@ void Game::ProcessEvents()
         if (event.type == sf::Event::MouseMoved)
             m_world->handleHover(event);
 
-        if (event.type == sf::Event::MouseButtonPressed &&
-            event.mouseButton.button == sf::Mouse::Left)
+        if (event.type == sf::Event::MouseButtonPressed
+            // && event.mouseButton.button == sf::Mouse::Left
+            )
         {
             m_world->setIsMouseDown(true);
             m_world->handleClick(event);
         }
 
-        if (event.type == sf::Event::MouseButtonReleased &&
-            event.mouseButton.button == sf::Mouse::Left)
+        if (event.type == sf::Event::MouseButtonReleased
+            // && event.mouseButton.button == sf::Mouse::Left
+            )
         {
             m_world->setIsMouseDown(false);
         }

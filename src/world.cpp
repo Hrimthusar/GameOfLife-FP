@@ -4,10 +4,15 @@
 #include <sstream>
 #include <algorithm>
 #include <string>
-#include <range/v3/view/cartesian_product.hpp>
-
+#include <tuple>
+#include <range/v3/view.hpp>
+#include <range/v3/algorithm/count_if.hpp>
+#include <range/v3/algorithm/for_each.hpp> 
 #include "world.hpp"
 #include "cell.hpp"
+
+using namespace ranges::v3;
+
 
 /* Null, because instance will be initialized on demand. */
 World *World::s_instance = NULL;
@@ -46,10 +51,10 @@ bool World::isMouseDown() const
 
 std::pair<unsigned, unsigned> World::getCellFromMouse(int mouseX, int mouseY)
 {
-    auto x = (mouseX - leftPadding()) / (cellSize + cellMargin);
-    auto y = (mouseY - topPadding()) / (cellSize + cellMargin);
+    auto i = (mouseY - topPadding()) / (cellSize + cellMargin);
+    auto j = (mouseX - leftPadding()) / (cellSize + cellMargin);
 
-    return std::make_pair(x, y);
+    return std::make_pair(i, j);
 }
 
 unsigned World::leftPadding()
@@ -66,18 +71,18 @@ void World::setIsMouseDown(bool isMouseDown)
     m_isMouseDown = isMouseDown;
 }
 
-void World::initGrid(unsigned m, unsigned n)
+void World::initGrid(unsigned xNum, unsigned yNum)
 {
-    xCount = m;
-    yCount = n;
+    xCount = xNum;
+    yCount = yNum;
 
-    unsigned cellSizeX = (screenWidth - cellMargin) / xCount;
-    unsigned cellSizeY = (screenHeight - cellMargin - statusHeight) / yCount;
+    unsigned cellSizeX = (screenHeight - cellMargin - statusHeight*2) / xCount;
+    unsigned cellSizeY = (screenWidth - cellMargin) / yCount;
 
     cellSize = std::min(cellSizeX, cellSizeY) - cellMargin;
 
-    innerWidth = ((cellSize + cellMargin) * xCount) - cellMargin;
-    innerHeight = ((cellSize + cellMargin) * yCount) - cellMargin;
+    innerWidth = ((cellSize + cellMargin) * yCount) - cellMargin;
+    innerHeight = ((cellSize + cellMargin) * xCount) - cellMargin;
 
     grid.resizeMatrix(xCount, yCount);
 
@@ -87,8 +92,8 @@ void World::initGrid(unsigned m, unsigned n)
         auto indices = it.getIndices();
 
         element.body().setSize(sf::Vector2f(cellSize, cellSize));
-        element.body().setPosition(leftPadding() + indices.first * (cellMargin + cellSize),
-                                   topPadding() + indices.second * (cellMargin + cellSize));
+        element.body().setPosition(leftPadding() + indices.second * (cellMargin + cellSize),
+                                   topPadding() + indices.first * (cellMargin + cellSize));
     }
 };
 
@@ -174,55 +179,57 @@ void World::drawInfo(sf::RenderWindow &window, sf::Time tick,
     window.draw(text);
 }
 
-void World::updateNeighbourCount(std::pair<int, int> indices,
-                                 std::vector<std::vector<int>> &count_cell)
+int World::countNeighbours(std::pair<Cell, ranges::common_tuple<int, int>> indexedCell)
 {
-    int i = indices.first;
-    int j = indices.second;
+    int i = std::get<0>(indexedCell.second);
+    int j = std::get<1>(indexedCell.second);
 
     static std::vector<int> step{-1, 0, 1};
-    static auto steps = ranges::v3::view::cartesian_product(step, step);
+    static auto steps = view::cartesian_product(step, step);
 
-    for (std::tuple<int, int> &&el : steps)
-    {
-        int i_step = std::get<0>(el);
-        int j_step = std::get<1>(el);
-        int x_new = i + i_step;
-        int y_new = j + j_step;
+    return count_if(steps,
+        [=](auto s){
+            return this->grid.indicesInBounds(std::get<0>(s) + i, std::get<1>(s) + j)
+            && (std::get<0>(s) != 0 || std::get<1>(s) != 0)
+            && this->grid[std::make_pair(std::get<0>(s)+i,std::get<1>(s)+j)].isOn();
+        });
+}
 
-        if (grid.indicesInBounds(x_new, y_new) && (i_step != 0 || j_step != 0))
-            count_cell[x_new][y_new] += 1;
+static bool applyRules(std::pair<int, bool> element) {
+    auto neighboursCount = element.first;
+    auto alive = element.second;
+
+    if (alive && (neighboursCount < 2 || neighboursCount > 3)) {
+        return false;
     }
+    else if (!alive && neighboursCount == 3)
+    {
+        return true;
+    }
+    return alive;
 }
 
 void World::updateGrid()
 {
-    std::vector<std::vector<int>> count_cell(xCount, std::vector<int>(yCount, 0));
+    auto niz = grid.asRange();
 
-    for (auto it = grid.begin(); it != grid.end(); ++it)
-    {
-        Cell &element = *it;
-        auto indices = it.getIndices();
+    std::vector<bool> result =
+        view::zip(
+            view::zip (
+                niz,
+                view::cartesian_product(view::ints(0, (int)xCount), view::ints(0, (int)yCount)) 
+            )                
+            | view::transform([=](auto indexedCell){return this->countNeighbours(indexedCell); }), // vraca vektor intova
 
-        if (element.isOn())
-            updateNeighbourCount(indices, count_cell);
-    }
+            niz | view::transform([](auto indexedCell){return indexedCell.isOn(); }) // vraca 2d niz boolova
+        )
+        | view::transform(applyRules);
 
-    for (auto it = grid.begin(); it != grid.end(); ++it)
-    {
-        Cell &element = *it;
-        auto indices = it.getIndices();
-        int x = indices.first;
-        int y = indices.second;
-
-        if (element.isOn() && (count_cell[x][y] < 2 || count_cell[x][y] > 3)) {
-            element.setIsOn(false);
-            --cellCount;
-        }
-        else if (!element.isOn() && count_cell[x][y] == 3)
-        {
-            element.setIsOn(true);
-            ++cellCount;
-        }
+    int i=0;
+    cellCount = 0;
+    for (auto &element : grid){
+        element.setIsOn(result[i]);
+        cellCount += result[i];
+        i++;
     }
 }

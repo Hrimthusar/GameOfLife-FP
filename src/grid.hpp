@@ -12,7 +12,7 @@ public:
     class Iterator
     {
     public:
-        Iterator(Grid *grid, int xIndex, int yIndex, int m_xSize);
+        Iterator(Grid *grid, int xIndex, int yIndex, int m_ySize);
 
         const Cell &operator*() const;
         Cell &operator*();
@@ -26,17 +26,16 @@ public:
         Grid *m_pGrid;
         int m_xIndex = -1;
         int m_yIndex = -1;
-        int m_xSize = 0;
+        int m_ySize = 0;
     };
 
 public:
     // constructors
     Grid();
-    // explicit Grid(int nSize);
-
     ~Grid();
 
-    // void insert(const T &value);
+    std::vector<Cell> asRange();
+
     bool indicesInBounds(int x, int y);
     bool indicesInBounds(std::pair<int, int> indices);
 
@@ -49,22 +48,10 @@ public:
     Iterator end() ;
 
 private:
-    // std::vector<std::vector<Cell>> *m_data = nullptr;
     std::vector<std::vector<Cell>> m_data;
 
-    // Cell *m_data = nullptr;
     int m_xSize = 0;
     int m_ySize = 0;
 };
-
-/*
-* Grid
-* methods
-**/
-// Grid::Grid(int nCapacity)
-// {
-//   m_nCapacity = nCapacity;
-//   m_data = new T[m_nCapacity];
-// }
 
 #endif // !GRID_H

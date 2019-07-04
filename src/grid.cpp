@@ -1,4 +1,8 @@
 #include "grid.hpp"
+#include <range/v3/view/join.hpp>
+ 
+using namespace ranges;
+
 
 Grid::Grid()
 {
@@ -11,6 +15,10 @@ Grid::~Grid()
     // delete m_data;
     m_xSize = 0;
     m_ySize = 0;
+}
+
+std::vector<Cell> Grid::asRange() {
+    return m_data | view::join;
 }
 
 bool Grid::indicesInBounds(int x, int y)
@@ -49,7 +57,6 @@ int Grid::size() const
 
 const Cell &Grid::operator[](std::pair<int, int> index) const
 {
-    // std::cout << "[const]" << std::endl;
     if (index.first >= m_xSize || index.second >= m_ySize)
         throw std::out_of_range("Index out of range");
 
@@ -67,19 +74,19 @@ Cell &Grid::operator[](std::pair<int, int> index)
 
 Grid::Iterator Grid::begin()
 {
-    return Grid::Iterator{this, 0, 0, m_xSize};
+    return Grid::Iterator{this, 0, 0, m_ySize};
 }
 
 Grid::Iterator Grid::end()
 {
-    return Grid::Iterator{this, 0, m_ySize, m_xSize};
+    return Grid::Iterator{this, m_xSize, 0, m_ySize};
 }
 
 /*
  * Iterator methods
  **/
-Grid::Iterator::Iterator(Grid *pGrid, int xIndex, int yIndex, int m_xSize)
-    : m_pGrid(pGrid), m_xIndex(xIndex), m_yIndex(yIndex), m_xSize(m_xSize)
+Grid::Iterator::Iterator(Grid *pGrid, int xIndex, int yIndex, int ySize)
+    : m_pGrid(pGrid), m_xIndex(xIndex), m_yIndex(yIndex), m_ySize(ySize)
 {
 }
 
@@ -104,10 +111,10 @@ Cell& Grid::Iterator::operator*()
 
 typename Grid::Iterator &Grid::Iterator::operator++()
 {
-    if (++m_xIndex >= m_xSize)
+    if (++m_yIndex >= m_ySize)
     {
-        m_xIndex = 0;
-        ++m_yIndex;
+        m_yIndex = 0;
+        ++m_xIndex;
     }
     // std::cout << m_xIndex << "," << m_yIndex << std::endl;
     return *this;
