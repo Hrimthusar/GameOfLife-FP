@@ -61,9 +61,6 @@ void Cell::setCellColor()
         m_body.setFillColor(s_clrBlankCell);
 }
 
-// TODO: move rules to seperate functions,
-//       apply all rules to pair<int,bool> argument
-//       apply all_of function on outputs
 bool Cell::applyRules(std::pair<int, bool> element)
 {
     auto neighboursCount = element.first;
