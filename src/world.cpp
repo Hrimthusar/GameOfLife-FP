@@ -7,7 +7,7 @@
 #include <tuple>
 #include <range/v3/view.hpp>
 #include <range/v3/algorithm/count_if.hpp>
-#include <range/v3/algorithm/for_each.hpp> 
+#include <range/v3/algorithm/for_each.hpp>
 #include "world.hpp"
 #include "cell.hpp"
 
@@ -36,7 +36,7 @@ World *World::getInstance(unsigned w, unsigned h)
 }
 
 World::World(unsigned w, unsigned h)
-    : screenWidth(w), screenHeight(h)
+    : m_screenWidth(w), m_screenHeight(h)
 {
     if (!font.loadFromFile("resources/fonts/arcadeclassic.ttf"))
     {
@@ -51,19 +51,19 @@ bool World::isMouseDown() const
 
 std::pair<unsigned, unsigned> World::getCellFromMouse(int mouseX, int mouseY)
 {
-    auto i = (mouseY - topPadding()) / (cellSize + cellMargin);
-    auto j = (mouseX - leftPadding()) / (cellSize + cellMargin);
+    auto i = (mouseY - topPadding()) / (m_cellSize + m_cellMargin);
+    auto j = (mouseX - leftPadding()) / (m_cellSize + m_cellMargin);
 
     return std::make_pair(i, j);
 }
 
 unsigned World::leftPadding()
 {
-    return (screenWidth - innerWidth) / 2;
+    return (m_screenWidth - m_innerWidth) / 2;
 }
 unsigned World::topPadding()
 {
-    return (screenHeight - innerHeight) / 2;
+    return (m_screenHeight - m_innerHeight) / 2;
 }
 
 void World::setIsMouseDown(bool isMouseDown)
@@ -73,33 +73,33 @@ void World::setIsMouseDown(bool isMouseDown)
 
 void World::initGrid(unsigned xNum, unsigned yNum)
 {
-    xCount = xNum;
-    yCount = yNum;
+    m_xCount = xNum;
+    m_yCount = yNum;
 
-    unsigned cellSizeX = (screenHeight - cellMargin - statusHeight*2) / xCount;
-    unsigned cellSizeY = (screenWidth - cellMargin) / yCount;
+    unsigned cellSizeX = (m_screenHeight - m_cellMargin - m_statusHeight*2) / m_xCount;
+    unsigned cellSizeY = (m_screenWidth - m_cellMargin) / m_yCount;
 
-    cellSize = std::min(cellSizeX, cellSizeY) - cellMargin;
+    m_cellSize = std::min(cellSizeX, cellSizeY) - m_cellMargin;
 
-    innerWidth = ((cellSize + cellMargin) * yCount) - cellMargin;
-    innerHeight = ((cellSize + cellMargin) * xCount) - cellMargin;
+    m_innerWidth = ((m_cellSize + m_cellMargin) * m_yCount) - m_cellMargin;
+    m_innerHeight = ((m_cellSize + m_cellMargin) * m_xCount) - m_cellMargin;
 
-    grid.resizeMatrix(xCount, yCount);
+    m_grid.resizeMatrix(m_xCount, m_yCount);
 
-    for (auto it = grid.begin(); it != grid.end(); ++it)
+    for (auto it = m_grid.begin(); it != m_grid.end(); ++it)
     {
         Cell &element = *it;
         auto indices = it.getIndices();
 
-        element.body().setSize(sf::Vector2f(cellSize, cellSize));
-        element.body().setPosition(leftPadding() + indices.second * (cellMargin + cellSize),
-                                   topPadding() + indices.first * (cellMargin + cellSize));
+        element.body().setSize(sf::Vector2f(m_cellSize, m_cellSize));
+        element.body().setPosition(leftPadding() + indices.second * (m_cellMargin + m_cellSize),
+                                   topPadding() + indices.first * (m_cellMargin + m_cellSize));
     }
 };
 
 void World::clearGrid()
 {
-    for (auto &element : grid)
+    for (auto &element : m_grid)
         element.setIsOn(false);
 }
 
@@ -110,25 +110,25 @@ void World::handleHover(sf::Event &event)
     auto y = cellCoords.second;
 
     bool wasHovered;
-    if (grid.indicesInBounds(x, y))
-        wasHovered = grid[cellCoords].isHovered();
+    if (m_grid.indicesInBounds(x, y))
+        wasHovered = m_grid[cellCoords].isHovered();
 
-    for (auto &element : grid)
+    for (auto &element : m_grid)
         element.setIsHovered(false);
 
-    if (grid.indicesInBounds(x, y))
+    if (m_grid.indicesInBounds(x, y))
     {
         if (isMouseDown() && !wasHovered) {
-            if(grid[cellCoords].isOn()){
-                --cellCount;
-                grid[cellCoords].setIsOn(false);
+            if(m_grid[cellCoords].isOn()){
+                --m_cellCount;
+                m_grid[cellCoords].setIsOn(false);
             } else {
-                ++cellCount;
-                grid[cellCoords].setIsOn(true);
+                ++m_cellCount;
+                m_grid[cellCoords].setIsOn(true);
             }
         }
 
-        grid[cellCoords].setIsHovered(true);
+        m_grid[cellCoords].setIsHovered(true);
     }
 }
 
@@ -138,39 +138,39 @@ void World::handleClick(sf::Event &event)
     auto x = cellCoords.first;
     auto y = cellCoords.second;
 
-    if (grid.indicesInBounds(x, y)) {
-        if(grid[cellCoords].isOn()){
-            --cellCount;
-            grid[cellCoords].setIsOn(false);
+    if (m_grid.indicesInBounds(x, y)) {
+        if(m_grid[cellCoords].isOn()){
+            --m_cellCount;
+            m_grid[cellCoords].setIsOn(false);
         } else {
-            ++cellCount;
-            grid[cellCoords].setIsOn(true);
+            ++m_cellCount;
+            m_grid[cellCoords].setIsOn(true);
         }
     }
 }
 
 void World::drawGrid(sf::RenderWindow &window)
 {
-    for (auto &el : grid)
+    for (auto &el : m_grid)
     {
         el.setCellColor();
         window.draw(el.body());
     }
 }
 
-void World::drawInfo(sf::RenderWindow &window, sf::Time tick, 
+void World::drawInfo(sf::RenderWindow &window, sf::Time tick,
                      bool animate, int xSize, int ySize)
 {
     sf::Text text;
     text.setFont(font);
-    text.setCharacterSize(statusHeight - 20);
+    text.setCharacterSize(m_statusHeight - 20);
     text.setFillColor(sf::Color::White);
     text.setPosition(20, 10);
 
     const auto separator = "   |   ";
 
     std::ostringstream oss;
-    oss << "population   " << cellCount << separator
+    oss << "population   " << m_cellCount << separator
         << "tick " << tick.asMilliseconds() << separator
         << "size " << xSize << " x " << ySize << separator
         << "play " << animate;
@@ -179,57 +179,32 @@ void World::drawInfo(sf::RenderWindow &window, sf::Time tick,
     window.draw(text);
 }
 
-int World::countNeighbours(std::pair<Cell, ranges::common_tuple<int, int>> indexedCell)
+std::vector<bool> World::calculateNewCellsStatus() const
 {
-    int i = std::get<0>(indexedCell.second);
-    int j = std::get<1>(indexedCell.second);
+    auto niz = m_grid.asRange();
 
-    static std::vector<int> step{-1, 0, 1};
-    static auto steps = view::cartesian_product(step, step);
+    auto countedNeighbours =
+            view::cartesian_product(view::ints(0, (int)m_xCount), view::ints(0, (int)m_yCount))
+            | view::transform([&](auto indexedCell)
+                        {return this->m_grid.countNeighbours(indexedCell);});
 
-    return count_if(steps,
-        [=](auto s){
-            return this->grid.indicesInBounds(std::get<0>(s) + i, std::get<1>(s) + j)
-            && (std::get<0>(s) != 0 || std::get<1>(s) != 0)
-            && this->grid[std::make_pair(std::get<0>(s)+i,std::get<1>(s)+j)].isOn();
-        });
+    auto cellsStatus =
+        niz | view::transform([](auto indexedCell){return indexedCell.isOn();});
+
+    return view::zip(countedNeighbours, cellsStatus)
+            | view::transform(Cell::applyRules);
 }
 
-static bool applyRules(std::pair<int, bool> element) {
-    auto neighboursCount = element.first;
-    auto alive = element.second;
-
-    if (alive && (neighboursCount < 2 || neighboursCount > 3)) {
-        return false;
-    }
-    else if (!alive && neighboursCount == 3)
-    {
-        return true;
-    }
-    return alive;
-}
 
 void World::updateGrid()
 {
-    auto niz = grid.asRange();
-
-    std::vector<bool> result =
-        view::zip(
-            view::zip (
-                niz,
-                view::cartesian_product(view::ints(0, (int)xCount), view::ints(0, (int)yCount)) 
-            )                
-            | view::transform([=](auto indexedCell){return this->countNeighbours(indexedCell); }), // vraca vektor intova
-
-            niz | view::transform([](auto indexedCell){return indexedCell.isOn(); }) // vraca 2d niz boolova
-        )
-        | view::transform(applyRules);
+    std::vector<bool> newCellsStatus = calculateNewCellsStatus();
 
     int i=0;
-    cellCount = 0;
-    for (auto &element : grid){
-        element.setIsOn(result[i]);
-        cellCount += result[i];
+    m_cellCount = 0;
+    for (auto &element : m_grid){
+        element.setIsOn(newCellsStatus[i]);
+        m_cellCount += newCellsStatus[i];
         i++;
     }
 }

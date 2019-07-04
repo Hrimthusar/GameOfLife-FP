@@ -4,11 +4,11 @@
 #include <stdexcept>
 #include "cell.hpp"
 #include <iostream>
+#include <range/v3/view.hpp>
 
 class Grid
 {
 public:
-    /* The iterator */
     class Iterator
     {
     public:
@@ -30,22 +30,22 @@ public:
     };
 
 public:
-    // constructors
     Grid();
     ~Grid();
 
-    std::vector<Cell> asRange();
+    std::vector<Cell> asRange() const;
 
-    bool indicesInBounds(int x, int y);
-    bool indicesInBounds(std::pair<int, int> indices);
+    int countNeighbours(ranges::common_tuple<int, int> indexedCell) const;
+    bool indicesInBounds(int x, int y) const;
+    bool indicesInBounds(std::pair<int, int> indices) const;
 
     void resizeMatrix(unsigned xCount, unsigned yCount);
     int size() const;
     const Cell &operator[](std::pair<int, int> index) const;
     Cell &operator[](std::pair<int, int> index);
 
-    Iterator begin() ;
-    Iterator end() ;
+    Iterator begin();
+    Iterator end();
 
 private:
     std::vector<std::vector<Cell>> m_data;

@@ -19,25 +19,25 @@ private:
     /* Private constructor to prevent instancing. */
     World(unsigned w, unsigned h);
 
-    unsigned screenWidth;
-    unsigned screenHeight;
+    unsigned m_screenWidth;
+    unsigned m_screenHeight;
 
-    unsigned innerWidth;
-    unsigned innerHeight;
+    unsigned m_innerWidth;
+    unsigned m_innerHeight;
 
-    unsigned xCount;
-    unsigned yCount;
+    unsigned m_xCount;
+    unsigned m_yCount;
 
-    unsigned cellSize;
-    unsigned cellMargin = 5;
+    unsigned m_cellSize;
+    unsigned m_cellMargin = 5;
 
-    unsigned statusHeight = 50;
+    unsigned m_statusHeight = 50;
 
-    unsigned cellCount = 0;
+    unsigned m_cellCount = 0;
 
     bool m_isMouseDown = false;
 
-    Grid grid;
+    Grid m_grid;
 
 public:
     /* Static access method. */
@@ -55,13 +55,16 @@ public:
                   bool animate, int s_xGridSize, int s_yGridSize);
     // void updateGridOld();
     void updateGrid();
-    int countNeighbours(std::pair<Cell, ranges::common_tuple<int, int>> indexedCell);
+    //int countNeighbours(std::pair<Cell, ranges::common_tuple<int, int>> indexedCell);
+    int countNeighbours(ranges::common_tuple<int, int> indexedCell) const;
 
     void handleHover(sf::Event &event);
     void handleClick(sf::Event &event);
 
     bool isMouseDown() const;
     void setIsMouseDown(bool isMouseDown);
+
+    std::vector<bool> calculateNewCellsStatus() const;
 
     /* Colors of cells */
     static const sf::Color clrClickedCell;

@@ -25,10 +25,12 @@ public:
 
     void setCellColor();
 
-    static const sf::Color clrClickedCell;
-    static const sf::Color clrClickedHoveredCell;
-    static const sf::Color clrHoveredCell;
-    static const sf::Color clrBlankCell;
+    static bool applyRules(std::pair<int, bool> element);
+
+    static const sf::Color s_clrClickedCell;
+    static const sf::Color s_clrClickedHoveredCell;
+    static const sf::Color s_clrHoveredCell;
+    static const sf::Color s_clrBlankCell;
 };
 
 #endif /* CELL_H */

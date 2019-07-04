@@ -6,9 +6,9 @@ const unsigned Game::s_windowWidth = sf::VideoMode::getDesktopMode().width * 2 /
 const unsigned Game::s_windowHeight = sf::VideoMode::getDesktopMode().height * 2 / 3;
 
 sf::Time Game::s_tick = sf::seconds(1.0f);
-sf::Time Game::s_fastest_tick = sf::seconds(0.1f);
-sf::Time Game::s_slowest_tick = sf::seconds(2.0f);
-sf::Time Game::s_tick_change = sf::seconds(0.1f);
+sf::Time Game::s_fastestTick = sf::seconds(0.1f);
+sf::Time Game::s_slowestTick = sf::seconds(2.0f);
+sf::Time Game::s_tickChange = sf::seconds(0.1f);
 int Game::s_xGridSize = 10;
 int Game::s_yGridSize = 20;
 int Game::s_xGridChange = 5;
@@ -82,14 +82,14 @@ void Game::processKeyboardEvents(sf::Event &event)
 
     case sf::Keyboard::H:
         // higher speed
-        if (s_tick > s_fastest_tick)
-            s_tick -= s_tick_change;
+        if (s_tick > s_fastestTick)
+            s_tick -= s_tickChange;
         break;
 
     case sf::Keyboard::L:
         // lower speed
-        if (s_tick < s_slowest_tick)
-            s_tick += s_tick_change;
+        if (s_tick < s_slowestTick)
+            s_tick += s_tickChange;
         break;
 
     case sf::Keyboard::B:

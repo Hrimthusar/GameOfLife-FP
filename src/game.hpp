@@ -15,9 +15,9 @@ private:
     sf::RenderWindow m_window;
     World *m_world;
     static sf::Time s_tick;
-    static sf::Time s_fastest_tick;
-    static sf::Time s_slowest_tick;
-    static sf::Time s_tick_change;
+    static sf::Time s_fastestTick;
+    static sf::Time s_slowestTick;;
+    static sf::Time s_tickChange;
 
     static int s_xGridSize;
     static int s_yGridSize;
