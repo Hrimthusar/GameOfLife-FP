@@ -5,32 +5,41 @@
 
 class Cell
 {
-private:
-    sf::RectangleShape m_body;
-    bool m_isOn;
-    bool m_isHovered;
-
 public:
+    int whatthefuck;
     Cell();
     Cell(sf::RectangleShape body);
+    Cell(const Cell &other);
+    Cell(Cell &&other);
+    ~Cell();
+
+    Cell& operator=(Cell other);
+
+    friend void swap(Cell& first, Cell& second);
 
     sf::RectangleShape &body();
     const sf::RectangleShape &body() const;
 
     bool isOn() const;
-    void setIsOn(bool isOn);
+    Cell withIsOn(bool isOn) &&;
 
     bool isHovered() const;
-    void setIsHovered(bool isHovered);
+    Cell withIsHovered(bool isHovered) &&;
 
-    void setCellColor();
+    void updateCellColor();
 
-    static bool applyRules(std::pair<int, bool> element);
+    static bool applyRules(const std::pair<int, bool> element);
 
     static const sf::Color s_clrClickedCell;
     static const sf::Color s_clrClickedHoveredCell;
     static const sf::Color s_clrHoveredCell;
     static const sf::Color s_clrBlankCell;
+
+private:
+    sf::RectangleShape m_body;
+    bool m_isOn;
+    bool m_isHovered;
+
 };
 
 #endif /* CELL_H */

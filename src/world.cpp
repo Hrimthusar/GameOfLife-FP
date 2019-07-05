@@ -100,7 +100,9 @@ void World::initGrid(unsigned xNum, unsigned yNum)
 void World::clearGrid()
 {
     for (auto &element : m_grid)
-        element.setIsOn(false);
+        element = std::move(element).withIsOn(false);
+
+    m_cellCount = 0;
 }
 
 void World::handleHover(sf::Event &event)
@@ -114,21 +116,24 @@ void World::handleHover(sf::Event &event)
         wasHovered = m_grid[cellCoords].isHovered();
 
     for (auto &element : m_grid)
-        element.setIsHovered(false);
+        element = std::move(element).withIsHovered(false);
+    // TODO Ovo znatno usporava program kada je size 50x100+,
+    // treba da se izbaci hovered iz cella i da se samo cuva indeks cell-a koji je hover-ovan,
+    // ili da se ostavi ovo i da se cuva indeks prethodnog hoverovanog negde
 
     if (m_grid.indicesInBounds(x, y))
     {
         if (isMouseDown() && !wasHovered) {
             if(m_grid[cellCoords].isOn()){
                 --m_cellCount;
-                m_grid[cellCoords].setIsOn(false);
+                m_grid[cellCoords] = std::move(m_grid[cellCoords]).withIsOn(false);
             } else {
                 ++m_cellCount;
-                m_grid[cellCoords].setIsOn(true);
+                m_grid[cellCoords] = std::move(m_grid[cellCoords]).withIsOn(true);
             }
         }
 
-        m_grid[cellCoords].setIsHovered(true);
+        m_grid[cellCoords] = std::move(m_grid[cellCoords]).withIsHovered(true);
     }
 }
 
@@ -141,10 +146,10 @@ void World::handleClick(sf::Event &event)
     if (m_grid.indicesInBounds(x, y)) {
         if(m_grid[cellCoords].isOn()){
             --m_cellCount;
-            m_grid[cellCoords].setIsOn(false);
+            m_grid[cellCoords] = std::move(m_grid[cellCoords]).withIsOn(false);
         } else {
             ++m_cellCount;
-            m_grid[cellCoords].setIsOn(true);
+            m_grid[cellCoords] = std::move(m_grid[cellCoords]).withIsOn(true);
         }
     }
 }
@@ -153,7 +158,7 @@ void World::drawGrid(sf::RenderWindow &window)
 {
     for (auto &el : m_grid)
     {
-        el.setCellColor();
+        el.updateCellColor();
         window.draw(el.body());
     }
 }
@@ -203,7 +208,7 @@ void World::updateGrid()
     int i=0;
     m_cellCount = 0;
     for (auto &element : m_grid){
-        element.setIsOn(newCellsStatus[i]);
+        element = std::move(element).withIsOn(newCellsStatus[i]);
         m_cellCount += newCellsStatus[i];
         i++;
     }
