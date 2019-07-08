@@ -6,7 +6,6 @@
 class Cell
 {
 public:
-    int whatthefuck;
     Cell();
     Cell(sf::RectangleShape body);
     Cell(const Cell &other);
@@ -23,10 +22,10 @@ public:
     bool isOn() const;
     Cell withIsOn(bool isOn) &&;
 
-    bool isHovered() const;
-    Cell withIsHovered(bool isHovered) &&;
+    // bool isHovered() const;
+    // Cell withIsHovered(bool isHovered) &&;
 
-    void updateCellColor();
+    void updateCellColor(bool isHovered);
 
     static bool applyRules(const std::pair<int, bool> element);
 
@@ -38,8 +37,6 @@ public:
 private:
     sf::RectangleShape m_body;
     bool m_isOn;
-    bool m_isHovered;
-
 };
 
 #endif /* CELL_H */

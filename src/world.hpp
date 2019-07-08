@@ -36,6 +36,9 @@ private:
     unsigned m_cellCount = 0;
 
     bool m_isMouseDown = false;
+    std::pair<int, int> m_hoveredCell;
+    std::pair<int, int> m_oldHoveredCell;
+
 
     Grid m_grid;
 
@@ -63,6 +66,12 @@ public:
 
     bool isMouseDown() const;
     void setIsMouseDown(bool isMouseDown);
+
+    std::pair<unsigned, unsigned> getHoveredIndices() const;
+    void setHoveredIndices(unsigned cellX, unsigned cellY);
+
+    std::pair<unsigned, unsigned> getLastHoveredIndices() const;
+    void setLastHoveredIndices(unsigned cellX, unsigned cellY);
 
     std::vector<bool> calculateNewCellsStatus() const;
 

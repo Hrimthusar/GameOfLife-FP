@@ -10,17 +10,17 @@ const sf::Color Cell::s_clrHoveredCell = sf::Color(0x00, 0xFF, 0xFF);
 const sf::Color Cell::s_clrBlankCell = sf::Color(0xCC, 0xFF, 0xFF);
 
 Cell::Cell(sf::RectangleShape body)
-    : m_body(body), m_isOn(false), m_isHovered(false)
+    : m_body(body), m_isOn(false)
 {
 }
 
 Cell::Cell()
-    : m_body(sf::Vector2f(0, 0)), m_isOn(false), m_isHovered(false)
+    : m_body(sf::Vector2f(0, 0)), m_isOn(false)
 {
 }
 
 Cell::Cell(const Cell &other)
-    : m_body(other.m_body), m_isOn(other.m_isOn), m_isHovered(other.m_isHovered)
+    : m_body(other.m_body), m_isOn(other.m_isOn)
 {
 }
 
@@ -38,7 +38,6 @@ void swap(Cell& first, Cell& second)
     using std::swap;
     swap(first.m_body, second.m_body);
     swap(first.m_isOn, second.m_isOn);
-    swap(first.m_isHovered, second.m_isHovered);
 }
 
 Cell& Cell::operator=(Cell other)
@@ -68,24 +67,14 @@ Cell Cell::withIsOn(bool isOn) &&
     return *this;
 }
 
-bool Cell::isHovered() const
+// TODO IS HOVERED
+void Cell::updateCellColor(bool isHovered)
 {
-    return m_isHovered;
-}
-
-Cell Cell::withIsHovered(bool isHovered) &&
-{
-    this->m_isHovered = isHovered;
-    return *this;
-}
-
-void Cell::updateCellColor()
-{
-    if (isOn() && isHovered())
+    if (m_isOn && isHovered)
         m_body.setFillColor(s_clrClickedHoveredCell);
     else if (m_isOn)
         m_body.setFillColor(s_clrClickedCell);
-    else if (m_isHovered)
+    else if (isHovered)
         m_body.setFillColor(s_clrHoveredCell);
     else
         m_body.setFillColor(s_clrBlankCell);

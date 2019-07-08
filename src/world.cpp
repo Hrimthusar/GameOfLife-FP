@@ -57,6 +57,22 @@ std::pair<unsigned, unsigned> World::getCellFromMouse(int mouseX, int mouseY)
     return std::make_pair(i, j);
 }
 
+std::pair<unsigned, unsigned> World::getHoveredIndices() const {
+    return m_hoveredCell;
+}
+
+void World::setHoveredIndices(unsigned cellX, unsigned cellY) {
+    m_hoveredCell = std::make_pair(cellX, cellY);
+}
+
+std::pair<unsigned, unsigned> World::getLastHoveredIndices() const {
+    return m_oldHoveredCell;
+}
+
+void World::setLastHoveredIndices(unsigned cellX, unsigned cellY) {
+    m_oldHoveredCell = std::make_pair(cellX, cellY);
+}
+
 unsigned World::leftPadding()
 {
     return (m_screenWidth - m_innerWidth) / 2;
@@ -86,6 +102,23 @@ void World::initGrid(unsigned xNum, unsigned yNum)
 
     m_grid.resizeMatrix(m_xCount, m_yCount);
 
+    // auto grid = m_grid.asRange();
+
+    // for_each(
+    //     view::zip(
+    //         grid,
+    //         view::cartesian_product(view::ints(0, (int)m_xCount), view::ints(0, (int)m_yCount))
+    //     ),
+    //     [this](auto &elementWithIndices) {
+    //         auto element = elementWithIndices.first;
+    //         auto indices = elementWithIndices.second;
+
+    //         element.body().setSize(sf::Vector2f(m_cellSize, m_cellSize));
+    //         element.body().setPosition(leftPadding() + std::get<0>(indices) * (m_cellMargin + m_cellSize),
+    //                                 topPadding() + std::get<1>(indices) * (m_cellMargin + m_cellSize));
+    //     }
+    // );
+
     for (auto it = m_grid.begin(); it != m_grid.end(); ++it)
     {
         Cell &element = *it;
@@ -111,19 +144,17 @@ void World::handleHover(sf::Event &event)
     auto x = cellCoords.first;
     auto y = cellCoords.second;
 
-    bool wasHovered;
-    if (m_grid.indicesInBounds(x, y))
-        wasHovered = m_grid[cellCoords].isHovered();
+    auto oldCoords = getLastHoveredIndices();
+    auto oldX = oldCoords.first;
+    auto oldY = oldCoords.second;
 
-    for (auto &element : m_grid)
-        element = std::move(element).withIsHovered(false);
-    // TODO Ovo znatno usporava program kada je size 50x100+,
-    // treba da se izbaci hovered iz cella i da se samo cuva indeks cell-a koji je hover-ovan,
-    // ili da se ostavi ovo i da se cuva indeks prethodnog hoverovanog negde
+    if(oldX != x || oldY != y)
+        setLastHoveredIndices(x,y);
+    setHoveredIndices(x, y);
 
     if (m_grid.indicesInBounds(x, y))
     {
-        if (isMouseDown() && !wasHovered) {
+        if (isMouseDown() && (x != oldX || y != oldY)) {
             if(m_grid[cellCoords].isOn()){
                 --m_cellCount;
                 m_grid[cellCoords] = std::move(m_grid[cellCoords]).withIsOn(false);
@@ -132,8 +163,6 @@ void World::handleHover(sf::Event &event)
                 m_grid[cellCoords] = std::move(m_grid[cellCoords]).withIsOn(true);
             }
         }
-
-        m_grid[cellCoords] = std::move(m_grid[cellCoords]).withIsHovered(true);
     }
 }
 
@@ -156,11 +185,21 @@ void World::handleClick(sf::Event &event)
 
 void World::drawGrid(sf::RenderWindow &window)
 {
-    for (auto &el : m_grid)
-    {
-        el.updateCellColor();
-        window.draw(el.body());
-    }
+    auto niz = m_grid.asRange();
+
+    for_each(
+        view::zip(
+            niz,
+            view::cartesian_product(view::ints(0, (int)m_xCount), view::ints(0, (int)m_yCount))
+        ),
+        [this, &window](auto el){
+            auto hoveredIndices = getHoveredIndices();
+            bool isHovered = (int)hoveredIndices.first == std::get<0>(el.second) &&
+                             (int)hoveredIndices.second == std::get<1>(el.second);
+            el.first.updateCellColor(isHovered);
+            window.draw(el.first.body());
+        }
+    );
 }
 
 void World::drawInfo(sf::RenderWindow &window, sf::Time tick,
@@ -186,20 +225,19 @@ void World::drawInfo(sf::RenderWindow &window, sf::Time tick,
 
 std::vector<bool> World::calculateNewCellsStatus() const
 {
-    auto niz = m_grid.asRange();
+    const auto niz = m_grid.asRange();
 
-    auto countedNeighbours =
+    const auto countedNeighbours =
             view::cartesian_product(view::ints(0, (int)m_xCount), view::ints(0, (int)m_yCount))
             | view::transform([&](auto indexedCell)
                         {return this->m_grid.countNeighbours(indexedCell);});
 
-    auto cellsStatus =
+    const auto cellsStatus =
         niz | view::transform([](auto indexedCell){return indexedCell.isOn();});
 
     return view::zip(countedNeighbours, cellsStatus)
             | view::transform(Cell::applyRules);
 }
-
 
 void World::updateGrid()
 {
