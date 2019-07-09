@@ -57,22 +57,6 @@ std::pair<unsigned, unsigned> World::getCellFromMouse(int mouseX, int mouseY)
     return std::make_pair(i, j);
 }
 
-std::pair<unsigned, unsigned> World::getHoveredIndices() const {
-    return m_hoveredCell;
-}
-
-void World::setHoveredIndices(unsigned cellX, unsigned cellY) {
-    m_hoveredCell = std::make_pair(cellX, cellY);
-}
-
-std::pair<unsigned, unsigned> World::getLastHoveredIndices() const {
-    return m_oldHoveredCell;
-}
-
-void World::setLastHoveredIndices(unsigned cellX, unsigned cellY) {
-    m_oldHoveredCell = std::make_pair(cellX, cellY);
-}
-
 unsigned World::leftPadding()
 {
     return (m_screenWidth - m_innerWidth) / 2;
@@ -144,13 +128,10 @@ void World::handleHover(sf::Event &event)
     auto x = cellCoords.first;
     auto y = cellCoords.second;
 
-    auto oldCoords = getLastHoveredIndices();
-    auto oldX = oldCoords.first;
-    auto oldY = oldCoords.second;
+    unsigned oldX = m_hoveredCell.first;
+    unsigned oldY = m_hoveredCell.second;
 
-    if(oldX != x || oldY != y)
-        setLastHoveredIndices(x,y);
-    setHoveredIndices(x, y);
+    m_hoveredCell = std::make_pair(x, y);
 
     if (m_grid.indicesInBounds(x, y))
     {
@@ -193,9 +174,8 @@ void World::drawGrid(sf::RenderWindow &window)
             view::cartesian_product(view::ints(0, (int)m_xCount), view::ints(0, (int)m_yCount))
         ),
         [this, &window](auto el){
-            auto hoveredIndices = getHoveredIndices();
-            bool isHovered = (int)hoveredIndices.first == std::get<0>(el.second) &&
-                             (int)hoveredIndices.second == std::get<1>(el.second);
+            bool isHovered = m_hoveredCell.first == std::get<0>(el.second) &&
+                             m_hoveredCell.second == std::get<1>(el.second);
             el.first.updateCellColor(isHovered);
             window.draw(el.first.body());
         }

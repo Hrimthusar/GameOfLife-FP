@@ -22,9 +22,6 @@ public:
     bool isOn() const;
     Cell withIsOn(bool isOn) &&;
 
-    // bool isHovered() const;
-    // Cell withIsHovered(bool isHovered) &&;
-
     void updateCellColor(bool isHovered);
 
     static bool applyRules(const std::pair<int, bool> element);
